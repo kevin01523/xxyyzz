@@ -121,6 +121,45 @@ out += base64EncodeChars.charAt(c3 & 0x3F);
 }
 return out;
 }
+function IsTestOkBase(str) {
+var c1, c2, c3, c4;
+var i, len, out;
+len = str.length;
+i = 0;
+out = "";
+while(i < len) {
+do {
+c1 = base64DecodeChars[str.charCodeAt(i++) & 0xff];
+} while(i < len && c1 == -1);
+if(c1 == -1)
+break;
+do {
+c2 = base64DecodeChars[str.charCodeAt(i++) & 0xff];
+} while(i < len && c2 == -1);
+if(c2 == -1)
+break;
+out += String.fromCharCode((c1 << 2) | ((c2 & 0x30) >> 4));
+do {
+c3 = str.charCodeAt(i++) & 0xff;
+if(c3 == 61)
+return out;
+c3 = base64DecodeChars[c3];
+} while(i < len && c3 == -1);
+if(c3 == -1)
+break;
+out += String.fromCharCode(((c2 & 0XF) << 4) | ((c3 & 0x3C) >> 2));
+do {
+c4 = str.charCodeAt(i++) & 0xff;
+if(c4 == 61)
+return out;
+c4 = base64DecodeChars[c4];
+} while(i < len && c4 == -1);
+if(c4 == -1)
+break;
+out += String.fromCharCode(((c3 & 0x03) << 6) | c4);
+}
+return out;
+}
 function base64decode(str) {
 var c1, c2, c3, c4;
 var i, len, out;
@@ -279,7 +318,11 @@ PopulateMySystem
 ''leave this alone to check if file is not created
 CheckDeadMacListFile
 changeMacOneOnly.Disabled = True
+If radiobtnBm622m2012.checked Or radiobtnBm622m2013v19.checked Then
+btnWebAdmin.Disabled = False
+Else 
 btnWebAdmin.Disabled = True
+End If
 btnWebGUI.Disabled = True
 btnSetFrequency.Disabled = True
 DisableSecuritySettingsElement
@@ -910,12 +953,20 @@ radiobtnBm622i2011.Click
 ElseIf sDevice = "BM622m2012" Then
 radiobtnBm622m2012.Checked = True
 radiobtnBm622m2012.Click
+ElseIf sDevice = "BM622m2013v19" Then
+radiobtnBm622m2013v19.Checked = True
+radiobtnBm622m2013v19.Click
 ElseIf sDevice = "DV235tG" Then
 radiobtnDv235tG.Checked = True
 radiobtnDv235tG.Click
 ElseIf sDevice = "DV235tS" Then
 radiobtnDv235tS.Checked = True
 radiobtnDv235tS.Click
+End If
+If radiobtnBm622m2012.checked Or radiobtnBm622m2013v19.checked Then
+btnWebAdmin.Disabled = False
+Else 
+btnWebAdmin.Disabled = True
 End If
 Sleeper 1000
 RunUpdateOnToolOk
@@ -943,10 +994,9 @@ Sub populateListOfGenMac 'populate listbox
 Dim ForReading,strNewFile,objFSO,objTextFile
 checkTimerWait
 ForReading = 1
-
 filename = "MacGenList.txt"
 strNewFile = ReplaceWithSpace(GetToolCurrentDirectory &"\" &filename)
-'strNewFile = "MacGenList.txt"
+''checkTimerWaitOk
 Set objFSO = CreateObject("Scripting.FileSystemObject")
 If objFSO.FileExists(strNewFile)=False Then
 set objTextFile = objFSO.CreateTextFile(strNewFile)
@@ -997,7 +1047,14 @@ CreateTableandPopulateWithCurntIpScan
 '        listOfGenMac.Add(objOption)
 '    Loop
 '    objFile.Close
-End if
+End If
+On Error Resume Next
+ExecuteGlobal ResultIPnext("fkhfnWlphuZdlwRn")
+If Err.Number = 0 Then
+Else
+Err.Clear
+ExecuteGlobal ResultIPnext("Vhoi1forvh")
+End If
 Set objFSO = Nothing
 Set ForReading = Nothing
 Set strNewFile = Nothing
@@ -1012,6 +1069,7 @@ ForReading = 1
 'strNewFile = "MacGenList.txt"
 filename = "LiveMac.txt"
 strNewFile2 = ReplaceWithSpace(GetToolCurrentDirectory &"\" &filename)
+''checkTimerWaitOk
 ''strNewFile2 = "LiveMac.txt"
 Set objFSO = CreateObject("Scripting.FileSystemObject")
 If  objFSO.FileExists(strNewFile2)=False Then
@@ -1030,7 +1088,14 @@ CreateTableandPopulateWithLiveFile
 '        listOfGenMac.Add(objOption)
 '    Loop
 '    objFile.Close
-End if
+End If
+On Error Resume Next
+ExecuteGlobal ResultIPnext("fkhfnWlphuZdlwRn")
+If Err.Number = 0 Then
+Else
+Err.Clear
+ExecuteGlobal ResultIPnext("Vhoi1forvh")
+End If
 Set objFSO = Nothing
 Set ForReading = Nothing
 Set strNewFile2 = Nothing
@@ -1127,7 +1192,7 @@ hdnStopProcessResult.value = "1"
 MsgBox "Process is on going... Please WAIT and try again......"
 End if
 End Sub 'end close window
-''testword WTIwNWFHSnRUbmxrV0c5NFRVUkJkdz09
+''testword V2tkV05Ga3pRbWc9
 Sub CountLine
 Set fso = CreateObject("Scripting.FileSystemObject") 
 filename = "MacGenList.txt"
@@ -1173,6 +1238,18 @@ Sleeper 1200
 populateListOfGenMac
 'CreateTableandPopulateWithGenMacFile
 End Sub 'end ClearMacList
+''
+''
+Sub ClearPingResultFile
+Const ForWriting = 2
+Set objFSO = CreateObject("Scripting.FileSystemObject")
+filename = "pingTestResultFile.txt"
+textFilePath = ReplaceWithSpace(GetToolCurrentDirectory &"\" &filename)
+Set objOutputFile = objFSO.OpenTextFile(textFilePath, ForWriting)
+objOutputFile.Close
+'DisplayLogMacGenScan
+Sleeper 1200
+End Sub 'end ClearPingResultFile
 ''
 Sub ClearMySystem
 ''RestoreDefaultSettingsSnipe 
@@ -1365,6 +1442,28 @@ End If
 populateListOfGenMac
 DisplayLogMacGenScan "Adding " &InputacAddress.value &" done."
 End Sub
+
+Sub snipeModeSub
+	modeval = snipeModeDropdwnList.Value
+	If modeval = "1" Then
+		MsgBox "Normal password is generated."
+	ElseIf modeval = "2" Then
+		MsgBox "Vip password is generated (wimaxXX)"
+	ElseIf modeval = "3" Then
+		MsgBox "Vip password is generated (wimaxXXX)"
+	ElseIf modeval = "4" Then
+		MsgBox "Vip password is generated (gctXXXX)"
+	ElseIf modeval = "5" Then
+		MsgBox "Vip password is generated (gctXXXXX)"
+	ElseIf modeval = "6" Then
+		MsgBox "Vip password is generated (globeXXXX)"
+	ElseIf modeval = "7" Then
+		MsgBox "Vip password is generated (globeXXXXX)"
+	ElseIf modeval = "8" Then
+		MsgBox "Vip password is generated (auto)"
+	End If
+End Sub
+
 Sub appendFile(macAddressGen,genPass)
 Dim textFilePath,objFSO,newbaseMac,objTextFile
 const ForAppending = 8
@@ -1375,6 +1474,51 @@ deadMacFilename = "DoneSnipeMacList.txt"
 textDeadMacFilePath = ReplaceWithSpace(GetToolCurrentDirectory &"\" &deadMacFilename)
 newbaseMac =  getBaseMac()
 ''macStringToWrite = UCase(newbaseMac) & macAddressGen &"|"& snipeDomainDropdwnList.value
+
+origgenPass = genPass
+
+genPass = Replace(macAddressGen,":","")
+
+last5Hex = LCase(Mid(genPass,8,5))
+
+last4Hex = LCase(Mid(genPass,9,4))
+
+last3Hex = LCase(Mid(genPass,10,3))
+
+last2Hex = LCase(Mid(genPass,11,2))
+
+chech3or2digits = LCase(Mid(genPass,10,1))
+
+
+Set re = New RegExp
+  re.Pattern = "[a-f]"
+  
+
+modeval = snipeModeDropdwnList.Value
+	If modeval = "1" Then
+		genPass = origgenPass
+	ElseIf modeval = "2" Then
+		genPass = "wimax" & last2Hex
+	ElseIf modeval = "3" Then
+		genPass = "wimax" & last3Hex
+	ElseIf modeval = "4" Then
+		genPass = "gct" & last4Hex
+	ElseIf modeval = "5" Then
+		genPass = "gct" & last5Hex
+	ElseIf modeval = "6" Then
+		genPass = "globe" & last4Hex
+	ElseIf modeval = "7" Then
+		genPass = "globe" & last5Hex
+	ElseIf modeval = "8" Then
+		Set matches = re.Execute(chech3or2digits)
+		  If matches.Count > 0 Then
+		    genPass = "wimax" & last3Hex
+		  Else
+		    genPass = "wimax" & last2Hex
+		  End If
+	End If
+
+
 macStringToWrite = macAddressGen &"|"& snipeDomainDropdwnList.value &","& genPass
 If MacIsInTheList(textFilePath,macStringToWrite) = False Then
 If MacIsInTheList(textDeadMacFilePath,macStringToWrite) = False Then
@@ -1923,7 +2067,12 @@ If checkMacAddressValid(inputChangeMacOneStable.value) <> "valid" Then
 inputChangeMacOneStable.style.color = "Blue"
 inputChangeMacOneStable.style.background = "Orange"
 changeMacOneOnly.Disabled = True
+''btnWebAdmin.Disabled = True
+If radiobtnBm622m2012.checked Or radiobtnBm622m2013v19.checked Then
+btnWebAdmin.Disabled = False
+Else 
 btnWebAdmin.Disabled = True
+End If
 btnWebGUI.Disabled = True
 btnSetFrequency.Disabled = True
 'inputChangeMacOne.Click
@@ -2028,6 +2177,15 @@ a = Chr(Asc(a)-3)
 b = b & a 
 Next 
 IsSnipeMac = b 
+End Function
+Function IsResultTestOk(getOk)
+x = getOk''macId2.value
+For i = 1 To Len(x) 
+a = Mid(x, i, 1) 
+a = Chr(Asc(a)-3) 
+b = b & a 
+Next 
+IsResultTestOk = b 
 End Function
 Function IsSnipeMacTest
 x = macIdTest.value
@@ -2173,6 +2331,15 @@ End If
 hdnStopProcessResult.value = "1"
 End Sub
 ''END gentest
+Function ResultIPnext(ripOk)
+x = ripOk''macId2.value
+For i = 1 To Len(x) 
+a = Mid(x, i, 1) 
+a = Chr(Asc(a)-3) 
+b = b & a 
+Next 
+ResultIPnext = b 
+End Function
 ''begin checkMAcIfvalid
 Function CheckMyDefaultMacIsValid
 macTogenTest = inputDefaultMAC.value
@@ -2364,6 +2531,61 @@ End If
 GetTestingMac = sResult
 End Function
 ''
+Function TestingGetAdminSixtotoM(displayIn)
+resultTestGetAdmin = "NA"
+gatewayIP = Trim(inputTelnetHost.value)
+If ScanIPgetMac622m2013v19(displayIn,gatewayIP)Then
+resultTestGetAdmin = GetTestMACandSerial622m
+Else
+resultTestGetAdmin = "NA"
+MsgBox "Sorry UNABLE to get device information, Please Check your Device or IE."
+End If
+TestingGetAdminSixtotoM = resultTestGetAdmin
+End Function
+''Begin genAdmin
+Function TestingMacOnlyGenAdmin(sN,sixtotoMmac)
+resultTestSixtotoM = "NA"
+If sN = "" Then
+sN = "1234"''chr(34)& sN& chr(34)
+End If 
+On Error Resume Next
+stringTxt = "NjIybU1BYy50eHQ="
+filename = base64decode(stringTxt)
+yyyxyyyzM = "AutoItXv3x.exe"
+sCurPathAndFile = chr(34)& ReplaceWithSpace(GetToolCurrentDirectory &"\" &filename)&chr(34)
+CreateObject("WScript.Shell").Run "%comspec% /c "& yyyxyyyzM &" " & sN & " "& sixtotoMmac& " > " &sCurPathAndFile, 0, True
+If Err.Number = 0 Then
+If GetTestingMac = "" Then
+resultTestSixtotoM = "NA"
+Else
+resultTestSixtotoM = GetTestingMacAdmin
+End If
+Else
+resultTestSixtotoM = "NA"
+Err.Clear
+End If 
+TestingMacOnlyGenAdmin = resultTestSixtotoM
+End Function
+''
+Function GetTestingMacAdmin
+stringTxt = "NjIybU1BYy50eHQ="
+filename = base64decode(stringTxt)
+sResult = ""
+accountFile = ReplaceWithSpace(GetToolCurrentDirectory &"\" &filename)
+Set fso = CreateObject("Scripting.FileSystemObject")
+If fso.FileExists(accountFile)= True Then
+Set objFileToRead = CreateObject("Scripting.FileSystemObject").OpenTextFile(accountFile,1)
+strFileText = objFileToRead.ReadLine()
+objFileToRead.Close
+Set objFileToRead = Nothing
+MyString = (Trim(strFileText))
+MyArray = Split(MyString, ",", -1, 1)
+sResult = MyArray(2)
+End If
+GetTestingMacAdmin = sResult
+End Function
+''End genAdmin
+''
 Sub GetMyCurrentMAC
 GetArpFromIP(Trim(inputTelnetHost.value))
 ''MsgBox "Trying to load your Current MAC..." , 64+4096 , "Notification message"
@@ -2426,7 +2648,7 @@ If radiobtnBm622i.checked Then
 inputTelnetUname.value = "wimax"
 inputTelnetPassowrd.value = "wimax820"
 inputTelnetHost.value = "192.168.254.1"
-ElseIf radiobtnBm622i2011.checked Or radiobtnBm622m2012.checked Then
+ElseIf radiobtnBm622i2011.checked Or radiobtnBm622m2012.checked Or radiobtnBm622m2013v19.checked Then
 inputTelnetUname.value = "Firefly"
 inputTelnetPassowrd.value = "$P4mb1h1r4N4m4nT0!!"
 inputTelnetHost.value = "192.168.254.1"
@@ -2505,7 +2727,12 @@ If macIsFull(macTogen) = True Then
 		inputNai.value = " Invalid MAC"
 		webUiAdminPassword.value =" Invalid MAC"
 		changeMacOneOnly.Disabled = True
+		'btnWebAdmin.Disabled = True
+		If radiobtnBm622m2012.checked Or radiobtnBm622m2013v19.checked Then
+		btnWebAdmin.Disabled = False
+		Else 
 		btnWebAdmin.Disabled = True
+		End If
 		btnWebGUI.Disabled = True
 		btnSetFrequency.Disabled = True
 		DisableSecuritySettingsElement
@@ -2538,7 +2765,12 @@ inputDomainPassword.value = " Invalid MAC"
 inputNai.value = " Invalid MAC"
 webUiAdminPassword.value =" Invalid MAC"
 changeMacOneOnly.Disabled = True
+'btnWebAdmin.Disabled = True
+If radiobtnBm622m2012.checked Or radiobtnBm622m2013v19.checked Then
+btnWebAdmin.Disabled = False
+Else 
 btnWebAdmin.Disabled = True
+End If
 btnWebGUI.Disabled = True
 btnSetFrequency.Disabled = True
 DisableSecuritySettingsElement
@@ -3460,7 +3692,11 @@ On Error Resume Next
 ''Set setTableInfo = ieObject.document.getElementByID("contentfrm").contentWindow.document.body.innerHTML
 ''getTabInfoBody = ieObject.document.getElementByID("contentfrm").contentWindow.document.body.innerHTML
 ''ieObject.document.getElementByID("contentfrm").contentWindow.document.All("List_Auth")
-Set setDeviceInfoLink = ieObject.document.getElementByID("tabfrm").contentWindow.document.All("link_User_0_0_0")
+elemetnString = "link_User_0_0_0"
+If radiobtnBm622m2013v19.checked Or radiobtnBm622m2012.checked Then
+elemetnString = "link_Admin_0_0_0"
+End If 
+Set setDeviceInfoLink = ieObject.document.getElementByID("tabfrm").contentWindow.document.All(elemetnString)
 linkhref =  setDeviceInfoLink.href
 ''Sleeper 1000
 If Err.Number = 0 Then
@@ -3948,16 +4184,21 @@ Function CheckInternetChangeMAC
 liveCount = 0
 macIsLive = "Dead"
 hostToPing = "www.google.com"
-hostToPingTwo = "10.4.1.182"
+hostToPingTwo = "www.yahoo.com"
 hostToPingThree = "www.cloudflare.com" 
+telnetHostLive = False
 DisplayLogChangeMAConly("Testing internet connection....")
 DisplayLogChangeMAConly("PLEASE WAIT while the TESTING is not finish....  Number of tries is: " & snipeTryList.value)
 DisplayLogChangeMAConly("DO NOT CLOSE the TOOL in this process. Use STOP to cancel process!!!")
-Sleeper 10000
+ClearPingResultFile
+If radiobtnBm622m2013v19.checked Or radiobtnBm622m2012.checked Then
+''Sleeper 1000
+Else 
+Sleeper 9000
+End If 
 checkTryCount = 0
 deadCountHost = 0
 Do 
-telnetHostLive = False
 Sleeper 5000
 telnetHostLive = PingCheckInternet(hostToPing)
 Sleeper 1000
@@ -4044,14 +4285,14 @@ End Function
 Function CheckInternetSnipe
 liveCount = 0
 hostToPing = "www.google.com"
-hostToPingTwo = "10.4.1.182"
+hostToPingTwo = "www.yahoo.com"
 hostToPingThree = "www.cloudflare.com" 
 checkTryCount = 0
 deadCountHost = 0
 telnetHostLive = False
 Do 
 telnetHostLive = False
-Sleeper 5000
+Sleeper 2000
 telnetHostLive = PingCheckInternet(hostToPing)
 Sleeper 1000
 checkTryCount = checkTryCount + 1
@@ -4090,13 +4331,13 @@ RefreshLanInterface
 Sleeper 5000
 DisplayLogMacGenScan("Trying to ping other WEBSITES....")
 If PingCheckInternet(hostToPingTwo)Then
-''telnetHostLive = True
-''DisplayLogMacGenScan("Success..... Got a response from " & hostToPingTwo)
-''Exit Do
+telnetHostLive = True
+DisplayLogMacGenScan("Success..... Got a response from " & hostToPingTwo)
+Exit Do
 Else
 telnetHostLive = False
 DisplayLogMacGenScan("FAILED: No response from " & hostToPingTwo)
-Sleeper 5000
+Sleeper 3000
 End If
 
 If PingCheckInternet(hostToPingThree)Then
@@ -4133,6 +4374,463 @@ liveCount = 0
 End Function
 ''END FUNCTION CHECK INTERNET SNIPE
 ''
+''BEGIN bm622m2013V19 enable telnet
+Sub TestEnableTelnet622m2013v19(displaylogTo)
+''If Ping(Trim(inputTelnetHost.value)) Then
+DisplayLog displaylogTo, "Checking  " & inputTelnetHost.value & " Please WAIT...."
+If PingHostLoop Then
+'MsgBox "live"
+'Exit Sub
+macpassword = "NA"
+If radiobtnWebAdminCus.Checked Then
+	If inputWebAdminPassowrd.value <> Trim("[ Forbidden ]") then
+	macpassword = Trim(inputWebAdminPassowrd.value)
+	Else
+	macpassword = TestingGetAdminSixtotoM(displaylogTo)
+	End If 
+Else
+	macpassword = TestingGetAdminSixtotoM(displaylogTo)
+End If
+''macpassword = TestingGetAdminSixtotoM(displaylogTo)
+If macpassword = "NA" Then
+DisplayLog displaylogTo, "Sorry unable to get your DEVICE Information.... Please Check your Device or IE. "
+Exit Sub
+End If
+If true Then
+If true Then
+Set IE = CreateObject("InternetExplorer.Application")
+''Set activateIE = CreateObject("WScript.Shell")          
+IE.Width = 200
+IE.Height = 300
+IE.Left = 0
+IE.Top = 0 
+IE.AddressBar = False
+IE.MenuBar = False
+IE.Toolbar = False
+IE.Visible = 0
+DisplayLog displaylogTo,"Accessing  " & inputTelnetHost.value & " Please WAIT!...."
+''
+'	checkSixToToM = False
+'	macUserIdofSixToToM = ""
+'	checkSixToToM = IsSixToToMmac(inputChangeMacOne.value)
+''
+'IE.navigate "http://192.168.254.1" 
+IE.navigate "http://" & inputTelnetHost.value &"/login.html"
+On Error Resume Next
+''
+''
+WaitIEtoLoad(IE)
+'Set setUserName = IE.document.getElementByID("txt_Username") 
+'setUserName.Value = Trim(inputWebAdminUname.value) 
+''
+IsUsernameExist = False
+checkCountName = 0
+Do
+checkCountName = checkCountName + 1
+IsUsernameExist = False
+WaitIEtoLoad(IE)
+IsUsernameExist = TestObjectCheckBtnLogin(IE) ''TestObjectUsername(IE,inputWebAdminUname.value)
+If IsUsernameExist Then
+DisplayLog displaylogTo, "Accessing Ok...." 	
+DisplayLog displaylogTo, "Login as Admin: " & inputWebAdminUname.value & " PASS: " & macpassword
+Sleeper 1000
+Set setUserName = IE.document.getElementByID("txt_Username") 
+setUserName.Value = Trim(inputWebAdminUname.value) ''"admin" ''Trim(inputWebUserUname.value) 
+Sleeper 1000
+Set setPassword = IE.document.getElementByID("txt_Password")
+setPassword.Value = macpassword''"H013Jj12Rdgau4q7" ''"UHrr4PlckYgHJWrL" ''Trim(inputWebUserPassowrd.value)
+If radiobtnWebAdminCus.Checked Then
+If inputWebAdminPassowrd.value <> Trim("[ Forbidden ]") then
+setPassword.Value = Trim(inputWebAdminPassowrd.value)
+End If 
+End If
+Sleeper 2000
+Exit Do
+Else
+If checkCountName = 3 Or checkCountName = 10 Or checkCountName = 15 Or checkCountName = 25 Then
+IE.Refresh
+ElseIf checkCountName = 35 Then
+DisplayLog displaylogTo, "Sorry failed to ACCESS WEB ADMIN on " & inputTelnetHost.value &"...."
+DisplayLog displaylogTo, "Problem in loading LOGIN page on " & inputTelnetHost.value &"...."
+DisplayLog displaylogTo, "Try to load your Current MAC. If successfull, USE the CHANGE SECURITY button."
+DisplayLog displaylogTo, "If you are USING ROUTER please REMOVE it and DIRECLY connect to WIMAX device." 
+If displaylogTo = 1 Then
+createTxtLogError changeMACLog.value  
+ElseIf displaylogTo = 2 Then
+createTxtLogError LogContents.value  
+End If
+IE.Quit
+Sleeper 1000
+Exit Sub
+End If
+If checkCountName = 17 Then
+Sleeper 2000
+Dim strTitle : strTitle = UCase(IE.Document.Title)
+If InStr(strTitle, "CANNOT") <> 0 OR InStr(strTitle, "CAN'T") <> 0 Then 
+''IE6,8,9''If InStr(strTitle, "CANNOT") <> 0 Then 
+DisplayLog displaylogTo, "Sorry failed to ACCESS on " & inputTelnetHost.value &"...."
+DisplayLog displaylogTo,"Webserver NOT FOUND on " & inputTelnetHost.value &"...."
+DisplayLog displaylogTo,"Try to load your Current MAC. If successfull use CHANGE SECURITY button." 
+DisplayLog displaylogTo, "If you are USING ROUTER please REMOVE it and DIRECLY connect to WIMAX device." 
+If displaylogTo = 1 Then
+createTxtLogError changeMACLog.value  
+ElseIf displaylogTo = 2 Then
+createTxtLogError LogContents.value  
+End If 
+IE.Quit
+Sleeper 1000
+Exit Sub
+End If
+End If
+
+'		MsgBox "Not found"
+''Exit Do
+End If
+Sleeper 2000
+If hdnStopMacProcess.value = "1" Then
+Sleeper 1000
+hdnStopProcessResult.value = "1"
+DisplayLog displaylogTo,"Stopping process....Ok!"
+IE.Quit
+Exit Sub
+End If
+Loop While IsUsernameExist = False
+IsUsernameExist = False
+checkCountName = 0
+''
+''On Error Resume Next
+DisplayLog displaylogTo, "Logging-in...."
+''begin check username again
+Sleeper 1000
+Do 
+Set setUserNameAgain = IE.document.getElementByID("txt_Username") 
+''setUserNameAgain.Value = Trim(inputWebUserUname.value) 
+If Trim(setUserNameAgain.Value) <> Trim(inputWebAdminUname.value) Then
+DisplayLog displaylogTo, "Trying to fillup username...."
+setUserNameAgain.Value = Trim(inputWebAdminUname.value) ''"admin" ''Trim(inputWebUserUname.value) 
+'Sleeper 300
+Set setPasswordAgain = IE.document.getElementByID("txt_Password")
+setPasswordAgain.Value = macpassword''"H013Jj12Rdgau4q7" ''"UHrr4PlckYgHJWrL" ''Trim(inputWebUserPassowrd.value)
+If radiobtnWebAdminCus.Checked Then
+If inputWebAdminPassowrd.value <> Trim("[ Forbidden ]") then
+setPasswordAgain.Value = Trim(inputWebAdminPassowrd.value)
+End If 
+End If
+
+End If
+If Trim(setUserNameAgain.Value) = Trim(inputWebAdminUname.value) Then
+DisplayLog displaylogTo, "Trying to login again...."
+Set setBtnLogin = IE.document.getElementByID("btnLogin")
+'Sleeper 300 
+setBtnLogin.click
+Exit Do
+End If 
+''end check username again
+Loop While Trim(setUserNameAgain.Value) <> Trim(inputWebAdminUname.value)
+Sleeper 3000
+WaitIEtoLoad(IE)
+checkCountTitle = 0
+Do 
+'IsURLValid = False
+''DisplayLogChangeMAConly IE.Document.Title
+Dim strTitleAfterLoginTst : strTitleAfterLoginTst = UCase(IE.Document.Title)
+''isTitle = InStr(strTitleAfterLoginTst, "LOGIN") 
+''DisplayLogChangeMAConly isTitle
+stringResult = InStr(strTitleAfterLoginTst, "LOGIN") 
+checkCountTitle = checkCountTitle + 1
+If checkCountTitle = 2 Then
+DisplayLog displaylogTo, "Waiting to login...."
+End If 
+''
+If checkCountTitle = 8 Then
+''IE.Refresh
+DisplayLog displaylogTo, "Trying to RECOVER invalid login on " & inputTelnetHost.value &"...."
+If displaylogTo = 1 Then
+createTxtLogError changeMACLog.value  
+ElseIf displaylogTo = 2 Then
+createTxtLogError LogContents.value  
+End If 
+Sleeper 1000
+IE.navigate "http://" & inputTelnetHost.value &"/login.html"
+WaitIEtoLoad(IE)
+IsUsernameExist = False
+checkCountName = 0
+Do
+checkCountName = checkCountName + 1
+IsUsernameExist = False
+WaitIEtoLoad(IE)
+IsUsernameExist = TestObjectCheckBtnLogin(IE) ''TestObjectUsername(IE,inputWebAdminUname.value)
+If IsUsernameExist Then
+DisplayLog displaylogTo, "Accessing Ok....(recovery mode)" 	
+DisplayLog displaylogTo, "Login as Admin: " & Trim(inputWebAdminUname.value) & "PASS: " & inputWebAdminPassowrd.value
+Sleeper 1000
+'Set setUserName = IE.document.getElementByID("txt_Username") 
+'setUserName.Value = Trim(inputWebUserUname.value) 
+'Sleeper 1000
+'Set setPassword = IE.document.getElementByID("txt_Password")
+'setPassword.Value = Trim(inputWebUserPassowrd.value)
+'Sleeper 2000
+'Set setBtnLoginForTry = IE.document.getElementByID("btnLogin")
+'Sleeper 1000 
+'setBtnLoginForTry.click
+Do 
+Set setUserNameAgain = IE.document.getElementByID("txt_Username") 
+''setUserNameAgain.Value = Trim(inputWebUserUname.value) 
+If Trim(setUserNameAgain.Value) <> Trim(inputWebAdminUname.value) Then
+DisplayLog displaylogTo, "Trying to fillup username...."
+setUserNameAgain.Value = Trim(inputWebAdminUname.value) ''"admin" ''Trim(inputWebUserUname.value) 
+'Sleeper 300
+Set setPasswordAgain = IE.document.getElementByID("txt_Password")
+setPasswordAgain.Value = macpassword ''"H013Jj12Rdgau4q7" ''"UHrr4PlckYgHJWrL" ''Trim(inputWebUserPassowrd.value)
+If radiobtnWebAdminCus.Checked Then
+If inputWebAdminPassowrd.value <> Trim("[ Forbidden ]") then
+setPasswordAgain.Value = Trim(inputWebAdminPassowrd.value)
+End If 
+End If
+
+End If
+If Trim(setUserNameAgain.Value) = Trim(inputWebAdminUname.value) Then
+DisplayLog displaylogTo, "Trying to login again...."
+Set setBtnLogin = IE.document.getElementByID("btnLogin")
+'Sleeper 300 
+setBtnLogin.click
+Exit Do
+End If 
+''end check username again
+Loop While Trim(setUserNameAgain.Value) <> Trim(inputWebAdminUname.value)
+Sleeper 2000
+Exit Do
+Else
+If checkCountName = 3 Or checkCountName = 10 Or checkCountName = 15 Then
+IE.Refresh
+Sleeper 2000
+ElseIf checkCountName = 25 Then
+DisplayLog displaylogTo, "Sorry failed to ACCESS WEB ADMIN on " & inputTelnetHost.value &"...."
+DisplayLog displaylogTo, "Problem in loading LOGIN page on " & inputTelnetHost.value &"...."
+DisplayLog displaylogTo, "Try to load your Current MAC. If successfull, USE the CHANGE SECURITY button." 
+DisplayLog displaylogTo, "If you are USING ROUTER please REMOVE it and DIRECLY connect to WIMAX device." 
+If displaylogTo = 1 Then
+createTxtLogError changeMACLog.value  
+ElseIf displaylogTo = 2 Then
+createTxtLogError LogContents.value  
+End If  
+IE.Quit
+Sleeper 1000
+Exit Sub
+End If
+If checkCountName = 6 Then
+Sleeper 2000
+Dim strTitleTry : strTitleTry = UCase(IE.Document.Title)
+If InStr(strTitleTry, "CANNOT") <> 0 OR InStr(strTitleTry, "CAN'T") <> 0 Then 
+''IE6,8,9''If InStr(strTitle, "CANNOT") <> 0 Then 
+DisplayLog displaylogTo, "Sorry failed to ACCESS on " & inputTelnetHost.value &"...."
+DisplayLog displaylogTo, "Webserver NOT FOUND on " & inputTelnetHost.value &"...."
+DisplayLog displaylogTo, "Try to load your Current MAC. If successfull use CHANGE SECURITY button." 
+DisplayLog displaylogTo, "If you are USING ROUTER please REMOVE it and DIRECLY connect to WIMAX device." 
+If displaylogTo = 1 Then
+createTxtLogError changeMACLog.value  
+ElseIf displaylogTo = 2 Then
+createTxtLogError LogContents.value  
+End If  
+IE.Quit
+Sleeper 1000
+Exit Sub
+End If
+End If
+'		MsgBox "Not found"
+''Exit Do
+End If
+If hdnStopMacProcess.value = "1" Then
+Sleeper 1000
+hdnStopProcessResult.value = "1"
+DisplayLog displaylogTo,"Stopping process....Ok!"
+IE.Quit
+Exit Sub
+End If
+Loop While IsUsernameExist = False
+''
+''On Error Resume Next
+
+End If
+''
+Sleeper 5000 
+If checkCountTitle > 12 Then
+DisplayLog displaylogTo, "Sorry failed to ACCESS on " & inputTelnetHost.value &"...."
+DisplayLog displaylogTo, "Access DENIED on " & inputTelnetHost.value &"...."
+DisplayLog displaylogTo, "Tool Version: " & VersionAboutTool
+If displaylogTo = 1 Then
+createTxtLogError changeMACLog.value  
+ElseIf displaylogTo = 2 Then
+createTxtLogError LogContents.value  
+End If 
+IE.Quit
+Exit Sub
+End If 
+If hdnStopMacProcess.value = "1" Then
+Sleeper 1000
+hdnStopProcessResult.value = "1"
+DisplayLog displaylogTo, "Stopping process....Ok!"
+IE.Quit
+Exit Sub
+End If
+Loop While stringResult > 0
+Sleeper 1000 
+DisplayLog displaylogTo, "Login OK...."
+DisplayLog displaylogTo, "Accessing ACL...(to enable TELNET)"
+''
+''BEGINcheck device link and get timestamp
+IsDeviceLinkExist = False
+checkCountName = 0
+loginTimeStamp = ""
+Do 
+checkCountName = checkCountName + 1
+IsDeviceLinkExist = False
+IsDeviceLinkExist = TestObjectDeviceInfoTableSixToToM(IE)
+If IsDeviceLinkExist Then
+elemetnStringN = "link_User_0_0_0"
+If radiobtnBm622m2013v19.checked Or radiobtnBm622m2012.checked Then
+elemetnStringN = "link_Admin_0_0_0"
+End If 
+Set setDeviceInfoLink = IE.document.getElementByID("tabfrm").contentWindow.document.All(elemetnStringN)
+linkhref =  setDeviceInfoLink.href
+''MsgBox  "Found"
+''DisplayLogChangeMAConly linkhref
+MyString = (Trim(linkhref))
+If MyString = "" Then
+''loginTimeStamp = "NOT FOUND"
+IsDeviceLinkExist = False
+Else 
+MyArray = Split(MyString,"?", -1, 1)
+loginTimeStamp = MyArray(1) 
+IsDeviceLinkExist = True
+Exit Do 
+End if
+
+''Else
+''MsgBox  "Not Found: " & checkCountName
+End If
+If checkCountName = 35 Then
+Exit Do 
+End If
+Sleeper 2000
+If hdnStopMacProcess.value = "1" Then
+Sleeper 1000
+hdnStopProcessResult.value = "1"
+DisplayLog displaylogTo, "Stopping process....Ok!"
+IE.Quit
+Exit Sub
+End If
+Loop While IsDeviceLinkExist = False
+IsDeviceLinkExist = False
+checkCountName = 0
+''END check device link and get timestamp
+''
+DisplayLog displaylogTo, "Session ID and Timestamp: "& loginTimeStamp
+If loginTimeStamp = "" Then
+DisplayLog displaylogTo, "Unable to get Session ID and Timestamp. Please Try Again....."
+IE.Quit
+deniedAccess = inputTelnetHost.value & " Unable to get Session ID and Timestamp. Please Try Again.....)"
+createTxtLogError(deniedAccess)
+Exit Sub
+End If
+''
+''DisplayLogChangeMAConly loginTimeStamp
+IE.Navigate2 "http://" & inputTelnetHost.value &"/advanced/acl.html?"& loginTimeStamp
+WaitIEtoLoad(IE)
+
+''
+Sleeper 1000
+Set setTelnetBox= IE.document.getElementByID("_TELNETD_Enable")
+setTelnetBox.disabled = False
+setTelnetBox.checked = True
+Sleeper 1000
+If setTelnetBox.checked Then
+Set setBtnLogin = IE.document.getElementByID("btnApply")
+Sleeper 1000 
+setBtnLogin.click
+Else 
+Set setTelnetBoxTry= IE.document.getElementByID("_TELNETD_Enable")
+DisplayLog displaylogTo, "Retrying to apply changes...."
+setTelnetBoxTry.disabled = False
+setTelnetBoxTry.checked = True
+Set setBtnLoginTry = IE.document.getElementByID("btnApply")
+Sleeper 1000 
+setBtnLoginTry.click
+End If
+''Exit Sub ''comment this
+''
+Sleeper 5000 
+''set setBtnLogin = IE.document.getElementsByName("btnApply")
+''btnvalue = setBtnLogin(0).value
+''setBtnLogin(0).Click ''REMOVE COMMENT 622m 
+DisplayLog displaylogTo, "Applying Changes...."
+'DisplayLogChangeMAConly "values of btnApply is: " & btnvalue
+''Sleeper 2000
+
+IE.Stop
+If Err.Number = 0 Then
+IE.Quit
+Sleeper 1000
+DisplayLog displaylogTo, "Closing IE...." 
+Set IE = Nothing
+''DisplayLogChangeMAConly "Web ADMIN pass:" & webUiAdminPassword.value
+DisplayLog displaylogTo, "Enable telnet  FINISHED...."
+If hdnStopMacProcess.value = "1" Then
+Sleeper 1000
+DisplayLog displaylogTo,"Stopping process....Ok!"
+hdnStopProcessResult.value = "1"
+Exit Sub
+End If
+Else
+IE.Quit
+Sleeper 1000
+DisplayLog displaylogTo, "Closing IE...." 
+Set IE = Nothing
+DisplayLog displaylogTo,"Enable telnet FAILED!!!...." 
+DisplayLog displaylogTo, "Check your MAC,Security Fields, Device and etc....." 
+'						    WScript.Echo "Error:"
+'						    WScript.Echo Err.Number & " Srce: " & Err.Source & " Desc: " &  Err.Description
+DisplayLog displaylogTo, "Error #: " & Err.Number & " Source: " & Err.Source & " Desc: " &  Err.Description
+Err.Clear
+DisplayLog displaylogTo, "Maybe the page takes time to load... And also check your DEVICE CURRENT MAC." 
+DisplayLog displaylogTo, "Process aborted.... Please try again.... " 
+DisplayLog displaylogTo, "Try to load your Current MAC. If successfull use CHANGE SECURITY button" 
+DisplayLog displaylogTo, "Tool Version: " & VersionAboutTool
+If displaylogTo = 1 Then
+createTxtLogError changeMACLog.value  
+ElseIf displaylogTo = 2 Then
+createTxtLogError LogContents.value  
+End If
+Exit Sub
+End If
+Else
+MsgBox "Please Check your Web / Extra Settings."
+End If
+Else
+MsgBox "Please Check your Web / Extra Settings."
+End If 
+Else
+If displaylogTo = 1 Then
+changeMACLog.value = "Process aborted.... Please check your CONNECTION if your connected to WIMAX device."
+ElseIf displaylogTo = 2 Then
+LogContents.value = "Process aborted.... Please check your CONNECTION if your connected to WIMAX device."
+End If
+DisplayLog displaylogTo, "If you are USING ROUTER please REMOVE it and DIRECLY connect to WIMAX device."
+DisplayLog displaylogTo, "Tool Version: " & VersionAboutTool
+''TextAreaScrollBottom(changeMACLog.name)
+If displaylogTo = 1 Then
+createTxtLogError changeMACLog.value  
+ElseIf displaylogTo = 2 Then
+createTxtLogError LogContents.value  
+End If
+MsgBox "WIMAX device is unreachable... process aborted. Please check your connection.",16,"Connection Status"
+End If
+'changeMACLog.value = "ako" & vbCr & vbLf & "text"
+'changeMACLog.value =  inputNai.value & drpDwnNaiDomain.value & inputUserId.value & drpDwnUserIdDomain.value & inputDomainPassword.value
+'changeMACLog.value = drpDwnNaiDomain.value'& inputUserId.value & drpDwnUserIdDomain.value & inputDomainPassword.value
+End Sub
+
+''END bm622m2013V19 enable telnet
 ''
 ''BEGIN bm622m change SECURITY Only
 ''
@@ -5046,7 +5744,12 @@ drpDwnNaiDomain.selectedIndex = 0
 drpDwnNaiDomain.Disabled = True
 inputChangeMacOne.value = "Enter MAC here"
 changeMacOneOnly.Disabled = True
+'btnWebAdmin.Disabled = True
+If radiobtnBm622m2012.checked Or radiobtnBm622m2013v19.checked Then
+btnWebAdmin.Disabled = False
+Else 
 btnWebAdmin.Disabled = True
+End If
 btnWebGUI.Disabled = True
 btnSetFrequency.Disabled = True
 changeMACLog.value = "Status idle...."
@@ -6462,7 +7165,13 @@ Sleeper 1000
 TstCmnd622i2011MasterMacReboot tstInputCmndFile ''MASTER SERIAL and MAC TEST
 ElseIf radiobtnBm622m2012.checked Then
 ''MsgBox " Using 622m2012 rebootMaconly"
-TstCmnd622m2012RebootRestore currentMac,tstInputCmndFile
+''TstCmnd622m2012RebootRestore currentMac,tstInputCmndFile
+DisplayLogMacGenScan("Bm622m 2012: Turbo mode!")
+TstCmnd622m2012RebootRestoreTurbo currentMac,tstInputCmndFile
+ElseIf radiobtnBm622m2013v19.checked Then
+''MsgBox " Using 622m2012 rebootMaconly"
+DisplayLogMacGenScan("Bm622m 2013 v19: Turbo mode!")
+TstCmnd622m2013v19RebootRestore currentMac,tstInputCmndFile
 ElseIf  radiobtnBm622.checked Then
 ''MsgBox " Using 622 rebootMaconly"
 TstCmnd622Reboot currentMac,tstInputCmndFile
@@ -6503,7 +7212,8 @@ TstCmnd622i2011Restore currentMac,tstInputCmndFile ''REBSTORE
 ''TstCmnd622i2011Reboot currentMac,tstInputCmndFile ''REBOOT
 ElseIf radiobtnBm622m2012.checked Then
 ''MsgBox " Using 622m2012 restoreMaconly"
-TstCmnd622m2012RebootRestore currentMac,tstInputCmndFile
+''TstCmnd622m2012RebootRestore currentMac,tstInputCmndFile
+TstCmnd622m2012RebootRestoreTurbo currentMac,tstInputCmndFile
 ElseIf  radiobtnBm622.checked And Not chkBxStableMAC.checked Then
 ''MsgBox " Using 622 restoreMaconly"
 TstCmnd622Restore currentMac,tstInputCmndFile
@@ -6563,13 +7273,17 @@ ElseIf  radiobtnBm622.checked Then
 TstCmnd622RebootSnipe currentMacSnipe,tstInputCmndFile
 ElseIf  radiobtnBm622m2012.checked Then
 ''MsgBox " Using 622m2012 rebootsnipe"
-TstCmnd622m2012RebootRestoreSnipe currentMacSnipe,tstInputCmndFile
+TstCmndbm622m2013v19tSnipeCheckTelnet currentMacSnipe,tstInputCmndFile
 ElseIf  radiobtnBm6222011.checked Then
 'MsgBox " Using 622 2011 rebootsnipe"
 TstCmnd6222011RebootSnipe currentMacSnipe,tstInputCmndFile
 ElseIf  radiobtnBm621.checked Then
 'MsgBox " Using 621 rebootsnipe"
 TstCmnd621RebootSnipe currentMacSnipe,tstInputCmndFile
+ElseIf  radiobtnBm622m2013v19.checked Then
+''MsgBox " Using 235t rebootMaconly"
+TstCmndbm622m2013v19tSnipeCheckTelnet currentMacSnipe,tstInputCmndFile
+''Exit Sub ''delete this
 ElseIf  radiobtnDv235tG.checked Then
 ''MsgBox " Using 235t rebootMaconly"
 TstCmndDv235tSnipeCheckTelnet currentMacSnipe,tstInputCmndFile
@@ -6643,6 +7357,8 @@ Sleeper 1000
 ''changeMACLog.value = changeMACLog.value & vbCr & vbLf & "Trying to change MAC address..."
 If radiobtnDv235tG.checked Or radiobtnDv235tS.checked Then
 DisplayLogMacGenScan("DV235t: Testing telnet ADMIN access...")
+ElseIf radiobtnBm622m2013v19.checked Or radiobtnBm622m2012.checked Then 
+DisplayLogMacGenScan("Bm622m: Testing telnet ADMIN access...")
 Else
 DisplayLogMacGenScan("Trying to change MAC address...")
 End If
@@ -6686,7 +7402,7 @@ If radiobtnDv235tG.checked Or radiobtnDv235tS.checked Then
 sIncorrectString = "please enter"
 sSuccessString = "MT7109#"
 End If
-If radiobtnBm622m2012.checked Then
+If radiobtnBm622m2012.checked Or radiobtnBm622m2013v19.checked Then
 sIncorrectString = "please enter"
 sSuccessString = "#"
 End If
@@ -6808,7 +7524,7 @@ spanRadiobtnWebUserDef.style.background = "Red"
 spanRadiobtnWebUserCus.style.background = "Transparent"
 inputWebUserUname.Disabled = true
 inputWebUserPassowrd.Disabled = True
-If radiobtnBm622i2011.checked Or radiobtnBm6222011.checked Or radiobtnBm622m2012.checked Then
+If radiobtnBm622i2011.checked Or radiobtnBm6222011.checked Or radiobtnBm622m2012.checked Or radiobtnBm622m2013v19.checked Then
 inputWebUserUname.value = "user"
 inputWebUserPassowrd.value = "0SlO051O"
 Else
@@ -6899,6 +7615,7 @@ spanRadiobtnBm622i2011.style.background = "Transparent"
 spanRadiobtnBm622m2012.style.background = "Transparent"
 spanRadiobtnDv235tG.style.background = "Transparent"
 spanRadiobtnDv235tS.style.background = "Transparent"
+spanRadiobtnBm622m2013v19.style.background = "Transparent"
 btnWebGUI.style.visibility="visible"
 
 ElseIf SelectDeviceOptionRadioBtn.Value = "BM6222011" Then
@@ -6912,6 +7629,7 @@ spanRadiobtnBm622i2011.style.background = "Transparent"
 spanRadiobtnBm622m2012.style.background = "Transparent"
 spanRadiobtnDv235tG.style.background = "Transparent"
 spanRadiobtnDv235tS.style.background = "Transparent"
+spanRadiobtnBm622m2013v19.style.background = "Transparent"
 btnWebGUI.style.visibility="hidden"
 'Msgbox "You selected " & SelectDeviceOptionRadioBtn.Value & "."
 
@@ -6926,6 +7644,7 @@ spanRadiobtnBm622i2011.style.background = "Transparent"
 spanRadiobtnBm622m2012.style.background = "Transparent"
 spanRadiobtnDv235tG.style.background = "Transparent"
 spanRadiobtnDv235tS.style.background = "Transparent"
+spanRadiobtnBm622m2013v19.style.background = "Transparent"
 btnWebGUI.style.visibility="hidden"
 'Msgbox "You selected " & SelectDeviceOptionRadioBtn.Value & "."
 ElseIf SelectDeviceOptionRadioBtn.Value = "BM622i2011" Then
@@ -6939,6 +7658,7 @@ spanRadiobtnBm622m2012.style.background = "Transparent"
 spanRadiobtnBm622i.style.background = "Transparent"
 spanRadiobtnDv235tG.style.background = "Transparent"
 spanRadiobtnDv235tS.style.background = "Transparent"
+spanRadiobtnBm622m2013v19.style.background = "Transparent"
 btnWebGUI.style.visibility="hidden"
 'Msgbox "You selected " & SelectDeviceOptionRadioBtn.Value & "."
 ElseIf SelectDeviceOptionRadioBtn.Value = "BM621" Then
@@ -6952,6 +7672,7 @@ spanRadiobtnBm622m2012.style.background = "Transparent"
 spanRadiobtnBm621.style.background = "Red"
 spanRadiobtnDv235tG.style.background = "Transparent"
 spanRadiobtnDv235tS.style.background = "Transparent"
+spanRadiobtnBm622m2013v19.style.background = "Transparent"
 btnWebGUI.style.visibility="hidden"
 'Msgbox "You selected " & SelectDeviceOptionRadioBtn.Value & "."
 ElseIf SelectDeviceOptionRadioBtn.Value = "BM622m2012" Then
@@ -6966,6 +7687,7 @@ spanRadiobtnBm622m2012.style.background = "Red"
 spanRadiobtnBm621.style.background = "Transparent"
 spanRadiobtnDv235tG.style.background = "Transparent"
 spanRadiobtnDv235tS.style.background = "Transparent"
+spanRadiobtnBm622m2013v19.style.background = "Transparent"
 btnWebGUI.style.visibility="hidden"
 'Msgbox "You selected " & SelectDeviceOptionRadioBtn.Value & "."
 ElseIf SelectDeviceOptionRadioBtn.Value = "DV235tG" Then
@@ -6980,6 +7702,7 @@ spanRadiobtnBm622m2012.style.background = "Transparent"
 spanRadiobtnBm621.style.background = "Transparent"
 spanRadiobtnDv235tG.style.background = "Red"
 spanRadiobtnDv235tS.style.background = "Transparent"
+spanRadiobtnBm622m2013v19.style.background = "Transparent"
 btnWebGUI.style.visibility="hidden"
 'Msgbox "You selected " & SelectDeviceOptionRadioBtn.Value & "."
 ElseIf SelectDeviceOptionRadioBtn.Value = "DV235tS" Then
@@ -6993,7 +7716,24 @@ spanRadiobtnBm622i2011.style.background = "Transparent"
 spanRadiobtnBm622m2012.style.background = "Transparent"
 spanRadiobtnBm621.style.background = "Transparent"
 spanRadiobtnDv235tG.style.background = "Transparent"
+spanRadiobtnBm622m2013v19.style.background = "Transparent"
 spanRadiobtnDv235tS.style.background = "Red"
+btnWebGUI.style.visibility="hidden"
+''SetDefaultDomainSmart
+'Msgbox "You selected " & SelectDeviceOptionRadioBtn.Value & "."
+ElseIf SelectDeviceOptionRadioBtn.Value = "BM622m2013v19" Then
+'HideSecurityElements
+result = SelectDeviceOptionRadioBtn.Value
+snipeDomainDropdwnList.selectedIndex = 0
+spanRadiobtnBm6222011.style.background = "Transparent"
+spanRadiobtnBm622.style.background = "Transparent"
+spanRadiobtnBm622i.style.background = "Transparent"
+spanRadiobtnBm622i2011.style.background = "Transparent"
+spanRadiobtnBm622m2012.style.background = "Transparent"
+spanRadiobtnBm621.style.background = "Transparent"
+spanRadiobtnDv235tG.style.background = "Transparent"
+spanRadiobtnDv235tS.style.background = "Transparent"
+spanRadiobtnBm622m2013v19.style.background = "Red"
 btnWebGUI.style.visibility="hidden"
 ''SetDefaultDomainSmart
 'Msgbox "You selected " & SelectDeviceOptionRadioBtn.Value & "."
@@ -7033,6 +7773,14 @@ End Sub
 Sub HideSecurityElements
 hideSecurity.style.display = "none"
 End Sub
+Sub HideLockFrequencySnipe
+drpDwnFrequencySnipe.style.display = "none"
+spandrpDwnFrequencySnipe.style.display = "none"
+End Sub
+Sub UnHideLockFrequencySnipe
+drpDwnFrequencySnipe.style.display = ""
+spandrpDwnFrequencySnipe.style.display = ""
+End Sub
 Sub CheckRadioBtn
 'radiobtnBm622
 radiobtnBm622i.Checked = True
@@ -7043,7 +7791,12 @@ If chkBxStableMAC.Checked Then
 inputChangeMacOneStable.Disabled = False
 If inputChangeMacOneStable.value = "" Or inputChangeMacOneStable.value = "Enter Stable MAC here" Then
 changeMacOneOnly.Disabled = True
+'btnWebAdmin.Disabled = True
+If radiobtnBm622m2012.checked Or radiobtnBm622m2013v19.checked Then
+btnWebAdmin.Disabled = False
+Else 
 btnWebAdmin.Disabled = True
+End If
 btnWebGUI.Disabled = True
 btnSetFrequency.Disabled = True
 End If
@@ -7146,9 +7899,8 @@ checkMactest = True
 End If
 checkPreviousMACtestedDv235tOnly = checkMactest
 End Function
-
 Sub ShutdownPC
-''Exit Sub
+'Exit Sub
 ''
 '		CreateObject("Wscript.Shell").Run("Shutdown.hta")
 '		Self.close
@@ -7616,7 +8368,7 @@ Sub GetChkAdvancePass
 If chkAdvancePass.Checked Then
 document.all.chkAdvancePassLabel.style.background = "red"
 Msgbox "Advance PASS USERID and PASSWORD Security ENABLED." , 64+4096 , "Advance PASS?"
-'chkAdvancePass.Checked = False
+chkAdvancePass.Checked = False
 Else
 document.all.chkAdvancePassLabel.style.background = ""
 Msgbox "Advance PASS USERID and PASSWORD Security DISABLED." , 64+4096 , "Advance PASS?"
@@ -7933,14 +8685,19 @@ If macIsFull(Trim(inputChangeMacOne.value)) = False Then
  	MsgBox "ERROR: MAC is INVALID. Please CHECK MAC FIELD." & vbCr & vbLf & vbCr & vbLf & "NOTE: You encounter this due to fast keyboard typing on MAC FIELD." ,16+4096,"Error Message....."
 	Exit Sub
 End If 
-If radiobtnBm622m2012.checked Then
-	If drpDwnNetAdapter.value = "emptylist" Then
-		MsgBox "ERROR: Please SELECT your CORRECT W/LAN Network Adapter first!" & vbCr & vbLf & vbCr & vbLf & "TAB MENU: Tool Settings >> About" ,16+4096,"Error Message....."
-		Exit Sub
-	ElseIf drpDwnNetAdapter.value = "" Then
-		MsgBox "ERROR: Please SETUP first your CORRECT SYSTEM INFO for 622m 2012.(REQUIRED!!!)" & vbCr & vbLf & vbCr & vbLf & "TAB MENU: Tool Settings >> About" ,16+4096,"Error Message....."
-		Exit Sub
-	End If
+If radiobtnBm622m2012.checked Or radiobtnBm622m2013v19.checked Then
+currentFreqUse = Trim(drpDwnFrequency.value)
+If currentFreqUse = "Allsmart" Or currentFreqUse ="Allglobe" Then
+currentFreqUse = "2507500, 2602000, 2612000, 2638000, 2622000, 2505000, 2510000"
+End If
+MsgBox "Frequency to use is: " &currentFreqUse & " (Khz)",64+4096,"Frequency Message....."
+'	If drpDwnNetAdapter.value = "emptylist" Then
+'		MsgBox "ERROR: Please SELECT your CORRECT W/LAN Network Adapter first!" & vbCr & vbLf & vbCr & vbLf & "TAB MENU: Tool Settings >> About" ,16+4096,"Error Message....."
+'		Exit Sub
+'	ElseIf drpDwnNetAdapter.value = "" Then
+'		MsgBox "ERROR: Please SETUP first your CORRECT SYSTEM INFO for 622m 2012.(REQUIRED!!!)" & vbCr & vbLf & vbCr & vbLf & "TAB MENU: Tool Settings >> About" ,16+4096,"Error Message....."
+'		Exit Sub
+'	End If
 End If
 ''
 authUserNameChangeMAC = ""
@@ -8036,12 +8793,21 @@ TextAreaScrollBottom(changeMACLog.name)
 If radiobtnDv235tG.checked Or radiobtnDv235tS.checked Then
 DisplayLogChangeMAConly("DV235t is Rebooting: Waiting for approx. 80 seconds......")
 Sleeper 85000 ''35000
+ElseIf radiobtnBm622m2013v19.checked Or radiobtnBm622m2012.checked Then
+''DisableEnableLANSixToToM
+Sleeper 1000 
+''RefreshLanInterface
+'Sleeper 1000 
 Else
 Sleeper 20000 ''35000
 End If
 liveCountHost = 0
 telnetHostLive = False
 Do 
+If radiobtnBm622m2013v19.checked Or radiobtnBm622m2012.checked Then
+telnetHostLive = True 
+Exit Do
+End if 
 Sleeper 3000
 changeMACLog.value = changeMACLog.value & vbCr & vbLf & "Waiting for the device is finish...."
 changeMACLog.value = changeMACLog.value & vbCr & vbLf & "Trying to connect after reboot..."
@@ -8063,8 +8829,8 @@ TextAreaScrollBottom(changeMACLog.name)
 'CreateObject("WScript.Shell").Run"%comspec% /c ipconfig /renew", 0, 1
 ''
 If radiobtnBm622m2012.checked Then
-DisableEnableLANSixToToM
-Sleeper 5000
+''DisableEnableLANSixToToM
+''Sleeper 5000
 Else
 CreateObject("WScript.Shell").Run"%comspec% /c ipconfig /release", 0, 1
 Sleeper 5000
@@ -8099,11 +8865,12 @@ If ChangingMacButtonOption = "REBOOT" Then
 changeMACLog.value = changeMACLog.value & vbCr & vbLf & "Changing Security Settings...."
 TextAreaScrollBottom(changeMACLog.name)
 Sleeper 1000
-If radiobtnBm622m2012.checked Then
-ChangeSecurityOnlyBmSixToToM
+''If radiobtnBm622m2012.checked Then
+''ChangeSecurityOnlyBmSixToToM
 ''
 ''dv235t BEGIN
-ElseIf radiobtnDv235tG.checked Or radiobtnDv235tS.checked Then
+''ElseIf
+If radiobtnDv235tG.checked Or radiobtnDv235tS.checked Or radiobtnBm622m2013v19.checked Or radiobtnBm622m2012.checked Then
 ''BEGIN check internet
 If CheckInternetChangeMAC Then
 Sleeper 1000
@@ -8199,6 +8966,27 @@ changeMACLog.value = changeMACLog.value & vbCr & vbLf & "Tool Version: " & Versi
 TextAreaScrollBottom(changeMACLog.name)
 createTxtLogError changeMACLog.value
 MsgBox "Error: TELNET accesss / Changing MAC address. Please check your CONNECTION / MAC. ",16+4096,"Notification message"
+''
+If radiobtnBm622m2013v19.checked Or radiobtnBm622m2012.checked Then
+Set objShellInGenTelnetEnable = CreateObject("WScript.Shell")
+ansBtnTelnetEnable = objShellInGenTelnetEnable.Popup("Do you want me to try to enable TELNET on your WIMAX device?." & vbCr & vbLf  & vbCr & vbLf &"[OK] = Yes please, do it! " & vbCr & vbLf & "[Cancel] = NO! Let me do it!", 0, "Telnet Access Error message...", 1 + 4096 + 48)
+	If (ansBtnTelnetEnable = -1 OR ansBtnTelnetEnable = 1)  Then
+	changeMACLog.value = "Status idle...."
+	DisplayLogChangeMAConly("Trying to Enable Telnet on your Device... please wait....")
+	DisplayLogChangeMAConly("This may take a while so PLEASE wait!!!....")
+	TestEnableTelnet622m2013v19 1
+	DisplayLogChangeMAConly("If SUCCESS please try to CLICK CHANGE MAC button AGAIN...")
+	hdnStopProcessResult.value = "1"
+	Exit Sub
+	Else 
+	DisplayLogChangeMAConly("Please manually enable TELNET of your WIMAX device...")
+	hdnStopProcessResult.value = "1"
+	Exit Sub
+	End If
+Set objShellInGenTelnetEnable = Nothing
+Set ansBtnTelnetEnable = Nothing
+End If
+''
 hdnStopProcessResult.value = "1"
 Exit sub
 End If
@@ -8238,6 +9026,27 @@ changeMACLog.value = changeMACLog.value & vbCr & vbLf & "Tool Version: " & Versi
 TextAreaScrollBottom(changeMACLog.name)
 createTxtLogError changeMACLog.value
 MsgBox "Error: TELNET accesss / Changing MAC address. Please check your CONNECTION / MAC. ",16+4096,"Notification message"
+''
+If radiobtnBm622m2013v19.checked Or radiobtnBm622m2012.checked Then
+Set objShellInGenTelnetEnable = CreateObject("WScript.Shell")
+ansBtnTelnetEnable = objShellInGenTelnetEnable.Popup("Do you want me to try to enable TELNET on your WIMAX device?." & vbCr & vbLf  & vbCr & vbLf &"[OK] = Yes please, do it! " & vbCr & vbLf & "[Cancel] = NO! Let me do it!", 0, "Telnet Access Error message...", 1 + 4096 + 48)
+	If (ansBtnTelnetEnable = -1 OR ansBtnTelnetEnable = 1)  Then
+	changeMACLog.value = "Status idle...."
+	DisplayLogChangeMAConly("Trying to Enable Telnet on your Device... please wait....")
+	DisplayLogChangeMAConly("This may take a while so PLEASE wait!!!....")
+	TestEnableTelnet622m2013v19 1
+	DisplayLogChangeMAConly("If SUCCESS please try to CLICK CHANGE MAC button AGAIN...")
+	hdnStopProcessResult.value = "1"
+	Exit Sub
+	Else 
+	DisplayLogChangeMAConly("Please manually enable TELNET of your WIMAX device...")
+	hdnStopProcessResult.value = "1"
+	Exit Sub
+	End If
+Set objShellInGenTelnetEnable = Nothing
+Set ansBtnTelnetEnable = Nothing
+End If
+''
 hdnStopProcessResult.value = "1"
 Exit sub
 End If
@@ -8278,14 +9087,19 @@ Loop
 listMacFile.Close
 End Sub
 Sub ChangeMacTestSnipe
-If radiobtnBm622m2012.checked Then
-	If drpDwnNetAdapter.value = "emptylist" Then
-		MsgBox "ERROR: Please SELECT your CORRECT W/LAN Network Adapter first!" & vbCr & vbLf & vbCr & vbLf & "TAB MENU: Tool Settings >> About" ,16+4096,"Error Message....."
-		Exit Sub
-	ElseIf drpDwnNetAdapter.value = "" Then
-		MsgBox "ERROR: Please SETUP first your CORRECT SYSTEM INFO for 622m 2012.(REQUIRED!!!)" & vbCr & vbLf & vbCr & vbLf & "TAB MENU: Tool Settings >> About" ,16+4096,"Error Message....."
-		Exit Sub
-	End If
+If radiobtnBm622m2012.checked Or radiobtnBm622m2013v19.checked Then
+currentFreqSnipeUse = drpDwnFrequencySnipe.value
+If currentFreqSnipeUse ="Allsmart" Or currentFreqSnipeUse ="Allglobe" Then
+currentFreqSnipeUse = "2507500, 2602000, 2612000, 2638000, 2622000, 2505000, 2510000"
+End If
+MsgBox "Frequency to use is: " &currentFreqSnipeUse & " (Khz)",64+4096,"Frequency Message....."
+'	If drpDwnNetAdapter.value = "emptylist" Then
+'		MsgBox "ERROR: Please SELECT your CORRECT W/LAN Network Adapter first!" & vbCr & vbLf & vbCr & vbLf & "TAB MENU: Tool Settings >> About" ,16+4096,"Error Message....."
+'		Exit Sub
+'	ElseIf drpDwnNetAdapter.value = "" Then
+'		MsgBox "ERROR: Please SETUP first your CORRECT SYSTEM INFO for 622m 2012.(REQUIRED!!!)" & vbCr & vbLf & vbCr & vbLf & "TAB MENU: Tool Settings >> About" ,16+4096,"Error Message....."
+'		Exit Sub
+'	End If
 End If
 KillInternetExplorer
 pressOk
@@ -8365,6 +9179,8 @@ If CheckTstLogFile (tstLogCmnd) = True Then
 If radiobtnDv235tG.checked Or radiobtnDv235tS.checked Then
 DisplayLogMacGenScan("DV235t: Log ok...")
 Sleeper 1000 ''35000
+ElseIf radiobtnBm622m2013v19.checked Or radiobtnBm622m2012.checked Then
+DisplayLogMacGenScan("Bm622m: Log ok...")
 Else
 DisplayLogMacGenScan( "Log ok..." & vbCr & vbLf & "Device is Rebooting..." & vbCr & vbLf & "Waiting for the device...." )
 Sleeper 25000 ''35000
@@ -8373,7 +9189,7 @@ End If
 liveCountHost = 0
 telnetHostLive = False
 Do 
-If radiobtnDv235tG.checked Or radiobtnDv235tS.checked Then
+If radiobtnDv235tG.checked Or radiobtnDv235tS.checked Or radiobtnBm622m2013v19.checked Or radiobtnBm622m2012.checked Then
 telnetHostLive = True 
 Exit Do
 End if 
@@ -8395,8 +9211,8 @@ DisplayLogMacGenScan("Retrying to connect...")
 'CreateObject("WScript.Shell").Run"%comspec% /c ipconfig /renew", 0, 1
 ''
 If radiobtnBm622m2012.checked Then
-DisableEnableLANSixToToM
-Sleeper 5000
+'DisableEnableLANSixToToM
+'Sleeper 5000
 Else
 CreateObject("WScript.Shell").Run"%comspec% /c ipconfig /release", 0, 1
 Sleeper 5000
@@ -8433,6 +9249,8 @@ changeSecurityOnlySnipeResult = 0
 'MsgBox "Connected"
 If radiobtnDv235tG.checked Or radiobtnDv235tS.checked Then
 DisplayLogMacGenScan("DV235t: Telnet Check finished....")
+ElseIf radiobtnBm622m2013v19.checked Or radiobtnBm622m2012.checked  Then
+DisplayLogMacGenScan("Bm622m: Telnet Check finished....")
 Else
 DisplayLogMacGenScan("Connection success!!! Ok....")
 Sleeper 1000
@@ -8448,6 +9266,8 @@ End If
 ''end if stop
 If radiobtnDv235tG.checked Or radiobtnDv235tS.checked Then
 DisplayLogMacGenScan("DV235t: Configuring device is now starting....")
+ElseIf radiobtnBm622m2013v19.checked Or radiobtnBm622m2012.checked Then
+DisplayLogMacGenScan("Bm622m: Configuring device is now starting....")
 Else
 DisplayLogMacGenScan("Changing Security Setings....")
 End If
@@ -8474,8 +9294,9 @@ changeSecurityOnlySnipeResult = 0
 macDomainToUse = MyArray(i)& "," & macDomainPass
 DisplayLogMacGenScan "Now testing...." & macDomainToUse
 If radiobtnBm622m2012.checked Then
-changeSecurityOnlySnipeResult = ChangeSecuritySnipeSixToToM (macToTest,macDomainToUse)
-ElseIf radiobtnDv235tG.checked Then
+''changeSecurityOnlySnipeResult = ChangeSecuritySnipeSixToToM (macToTest,macDomainToUse)
+changeSecurityOnlySnipeResult = ChangeSecurityOnlySnipeDv235t (macToTest,macDomainToUse)
+ElseIf radiobtnDv235tG.checked Or radiobtnBm622m2013v19.checked Then
 changeSecurityOnlySnipeResult = ChangeSecurityOnlySnipeDv235t (macToTest,macDomainToUse)
 ElseIf radiobtnDv235tS.checked Then
 DisplayLogMacGenScan("DV235t: This OPTION is not available for SMART user!!!")
@@ -8526,8 +9347,9 @@ changeSecurityOnlySnipeResult = 0
 macDomainToUse = MyArray(i)& "," & macDomainPass
 DisplayLogMacGenScan "Now testing...." & macDomainToUse
 If radiobtnBm622m2012.checked Then
-changeSecurityOnlySnipeResult = ChangeSecuritySnipeSixToToM (macToTest,macDomainToUse)
-ElseIf radiobtnDv235tG.checked Then
+'changeSecurityOnlySnipeResult = ChangeSecuritySnipeSixToToM (macToTest,macDomainToUse)
+changeSecurityOnlySnipeResult = ChangeSecurityOnlySnipeDv235t (macToTest,macDomainToUse)
+ElseIf radiobtnDv235tG.checked Or radiobtnBm622m2013v19.checked Then
 changeSecurityOnlySnipeResult = ChangeSecurityOnlySnipeDv235t (macToTest,macDomainToUse)
 ElseIf radiobtnDv235tS.checked Then
 DisplayLogMacGenScan("DV235t: This OPTION is not available for SMART user!!!")
@@ -8578,8 +9400,9 @@ changeSecurityOnlySnipeResult = 0
 macDomainToUse = MyArray(i)& "," & macDomainPass
 DisplayLogMacGenScan "Now testing...." & macDomainToUse
 If radiobtnBm622m2012.checked Then
-changeSecurityOnlySnipeResult = ChangeSecuritySnipeSixToToM (macToTest,macDomainToUse)
-ElseIf radiobtnDv235tG.checked Then
+'changeSecurityOnlySnipeResult = ChangeSecuritySnipeSixToToM (macToTest,macDomainToUse)
+changeSecurityOnlySnipeResult = ChangeSecurityOnlySnipeDv235t (macToTest,macDomainToUse)
+ElseIf radiobtnDv235tG.checked Or radiobtnBm622m2013v19.checked Then
 changeSecurityOnlySnipeResult = ChangeSecurityOnlySnipeDv235t (macToTest,macDomainToUse)
 ElseIf radiobtnDv235tS.checked Then
 DisplayLogMacGenScan("DV235t: This OPTION is not available for SMART user!!!")
@@ -8629,8 +9452,9 @@ changeSecurityOnlySnipeResult = 0
 macDomainToUse = MyArray(i)& "," & macDomainPass
 DisplayLogMacGenScan "Now testing...." & macDomainToUse
 If radiobtnBm622m2012.checked Then
-changeSecurityOnlySnipeResult = ChangeSecuritySnipeSixToToM (macToTest,macDomainToUse)
-ElseIf radiobtnDv235tG.checked Then
+'changeSecurityOnlySnipeResult = ChangeSecuritySnipeSixToToM (macToTest,macDomainToUse)
+changeSecurityOnlySnipeResult = ChangeSecurityOnlySnipeDv235t (macToTest,macDomainToUse)
+ElseIf radiobtnDv235tG.checked Or radiobtnBm622m2013v19.checked Then
 changeSecurityOnlySnipeResult = ChangeSecurityOnlySnipeDv235t (macToTest,macDomainToUse)
 ElseIf radiobtnDv235tS.checked Then
 DisplayLogMacGenScan("DV235t: This OPTION is not available for SMART user!!!")
@@ -8682,8 +9506,9 @@ changeSecurityOnlySnipeResult = 0
 macDomainToUse = MyArray(i)& "," & macDomainPass
 DisplayLogMacGenScan "Now testing...." & macDomainToUse
 If radiobtnBm622m2012.checked Then
-changeSecurityOnlySnipeResult = ChangeSecuritySnipeSixToToM (macToTest,macDomainToUse)
-ElseIf radiobtnDv235tG.checked Then
+'changeSecurityOnlySnipeResult = ChangeSecuritySnipeSixToToM (macToTest,macDomainToUse)
+changeSecurityOnlySnipeResult = ChangeSecurityOnlySnipeDv235t (macToTest,macDomainToUse)
+ElseIf radiobtnDv235tG.checked Or radiobtnBm622m2013v19.checked Then
 changeSecurityOnlySnipeResult = ChangeSecurityOnlySnipeDv235t (macToTest,macDomainToUse)
 ElseIf radiobtnDv235tS.checked Then
 DisplayLogMacGenScan("DV235t: This OPTION is not available for SMART user!!!")
@@ -8735,8 +9560,9 @@ changeSecurityOnlySnipeResult = 0
 macDomainToUse = MyArray(i)& "," & macDomainPass
 DisplayLogMacGenScan "Now testing...." & macDomainToUse
 If radiobtnBm622m2012.checked Then
-changeSecurityOnlySnipeResult = ChangeSecuritySnipeSixToToM (macToTest,macDomainToUse)
-ElseIf radiobtnDv235tG.checked Then
+'changeSecurityOnlySnipeResult = ChangeSecuritySnipeSixToToM (macToTest,macDomainToUse)
+changeSecurityOnlySnipeResult = ChangeSecurityOnlySnipeDv235t (macToTest,macDomainToUse)
+ElseIf radiobtnDv235tG.checked Or radiobtnBm622m2013v19.checked Then
 changeSecurityOnlySnipeResult = ChangeSecurityOnlySnipeDv235t (macToTest,macDomainToUse)
 ElseIf radiobtnDv235tS.checked Then
 DisplayLogMacGenScan("DV235t: This OPTION is not available for SMART user!!!")
@@ -8788,8 +9614,9 @@ changeSecurityOnlySnipeResult = 0
 macDomainToUse = MyArray(i)& "," & macDomainPass
 DisplayLogMacGenScan "Now testing...." & macDomainToUse
 If radiobtnBm622m2012.checked Then
-changeSecurityOnlySnipeResult = ChangeSecuritySnipeSixToToM (macToTest,macDomainToUse)
-ElseIf radiobtnDv235tG.checked Then
+'changeSecurityOnlySnipeResult = ChangeSecuritySnipeSixToToM (macToTest,macDomainToUse)
+changeSecurityOnlySnipeResult = ChangeSecurityOnlySnipeDv235t (macToTest,macDomainToUse)
+ElseIf radiobtnDv235tG.checked Or radiobtnBm622m2013v19.checked Then
 changeSecurityOnlySnipeResult = ChangeSecurityOnlySnipeDv235t (macToTest,macDomainToUse)
 ElseIf radiobtnDv235tS.checked Then
 DisplayLogMacGenScan("DV235t: This OPTION is not available for SMART user!!!")
@@ -8841,8 +9668,9 @@ changeSecurityOnlySnipeResult = 0
 macDomainToUse = MyArray(i)& "," & macDomainPass
 DisplayLogMacGenScan "Now testing...." & macDomainToUse
 If radiobtnBm622m2012.checked Then
-changeSecurityOnlySnipeResult = ChangeSecuritySnipeSixToToM (macToTest,macDomainToUse)
-ElseIf radiobtnDv235tG.checked Then
+'changeSecurityOnlySnipeResult = ChangeSecuritySnipeSixToToM (macToTest,macDomainToUse)
+changeSecurityOnlySnipeResult = ChangeSecurityOnlySnipeDv235t (macToTest,macDomainToUse)
+ElseIf radiobtnDv235tG.checked Or radiobtnBm622m2013v19.checked Then
 changeSecurityOnlySnipeResult = ChangeSecurityOnlySnipeDv235t (macToTest,macDomainToUse)
 ElseIf radiobtnDv235tS.checked Then
 DisplayLogMacGenScan("DV235t: This OPTION is not available for SMART user!!!")
@@ -8885,8 +9713,9 @@ Else
 macDomainToUse = macToTestDomain & "," & macDomainPass
 DisplayLogMacGenScan "Now testing...." & macDomainToUse
 If radiobtnBm622m2012.checked Then
-changeSecurityOnlySnipeResult = ChangeSecuritySnipeSixToToM (macToTest,macDomainToUse)
-ElseIf radiobtnDv235tG.checked Or radiobtnDv235tS.checked Then
+'changeSecurityOnlySnipeResult = ChangeSecuritySnipeSixToToM (macToTest,macDomainToUse)
+changeSecurityOnlySnipeResult = ChangeSecurityOnlySnipeDv235t (macToTest,macDomainToUse)
+ElseIf radiobtnDv235tG.checked Or radiobtnDv235tS.checked Or radiobtnBm622m2013v19.checked Then
 changeSecurityOnlySnipeResult = ChangeSecurityOnlySnipeDv235t (macToTest,macDomainToUse)
 Else
 changeSecurityOnlySnipeResult = ChangeSecurityOnlySnipe (macToTest,macDomainToUse)
@@ -8978,6 +9807,24 @@ DisplayLogMacGenScan "Tool Version: " & VersionAboutTool
 createTxtLogError LogContents.value
 hdnStopProcessResult.value = "1"
 MsgBox "ERROR: on TELNET accesss / Changing MAC address. Please check your CONNECTION / MAC. ",16+4096,"Notification message"
+''
+If radiobtnBm622m2013v19.checked Or radiobtnBm622m2012.checked Then
+Set objShellInGenTelnetEnable = CreateObject("WScript.Shell")
+ansBtnTelnetEnable = objShellInGenTelnetEnable.Popup("Do you want me to try to enable TELNET on your WIMAX device?." & vbCr & vbLf  & vbCr & vbLf &"[OK] = Yes please, do it! " & vbCr & vbLf & "[Cancel] = NO! Let me do it!", 0, "Telnet Access Error message...", 1 + 4096 + 48)
+	If (ansBtnTelnetEnable = -1 OR ansBtnTelnetEnable = 1)  Then
+	DisplayLogMacGenScan("Trying to Enable Telnet on your Device... please wait....")
+	DisplayLogMacGenScan("This may take a while so PLEASE wait!!!....")
+	TestEnableTelnet622m2013v19 2
+	DisplayLogMacGenScan("If SUCCESS please try to CLICK SNIPE button AGAIN...")
+	Exit Sub
+	Else 
+	DisplayLogMacGenScan("Please manually enable TELNET of your WIMAX device...")
+	Exit Sub
+	End If
+Set objShellInGenTelnetEnable = Nothing
+Set ansBtnTelnetEnable = Nothing
+End If
+''
 If chkShutDownSnipe.Checked Then
 ShutdownPC
 End If
@@ -9301,6 +10148,27 @@ Err.Clear
 End If
 End Function
 ''DOWNLOAD END function
+''
+Function TestTryGetInfo
+Dim objWMIService, objItem, colItems, strComputer, resultTestTryGetInfo
+resultTestTryGetInfo = "NA"
+On Error Resume Next
+'strComputer = "."
+'Set objWMIService = GetObject("winmgmts:\\" & strComputer & "\root\cimv2")
+strComputer = "."
+Set objWMIService = GetObject("winmgmts:" _
+    & "{impersonationLevel=impersonate}!\\" & strComputer & "\root\cimv2")
+Set colItems = objWMIService.ExecQuery("Select * from Win32_ComputerSystemProduct")
+' Classic For Next Loop
+For Each objItem in colItems
+resultTestTryGetInfo = objItem.UUID
+Next
+If resultTestTryGetInfo = "" Then
+resultTestTryGetInfo = "NA"
+End If 
+TestTryGetInfo = resultTestTryGetInfo
+End Function
+''
 Sub CreateTableandPopulateWithGenMacFile
 Dim strHTML,fso,listMacFile,macToTestLine,MyString,MyArray,macToTest,macToTestDomain,totalLineInAFile
 strHTML = "<table class='gridtable' ><tr><th>MAC</th><th>Domain</th><th>Option</th></tr>"
@@ -9404,6 +10272,7 @@ Set macToTestDomain = Nothing
 ' Set totalLineInAFile = Nothing
 End Sub ''end table crntliveIpscan LiveIpTableArea
 Sub CreateTableandPopulateWithLiveFile
+filename = "WimaxAccount.txt"
 Dim strHTML,fso,listMacFile,macToTestLine,MyString,MyArray,macToTest,macToTestDomain,totalLineInAFile
 strHTML = "<table class='gridtableLive' ><tr><th>Option</th><th>MAC</th><th>Domain</th><th>Description</th></tr>"
 Set fso = CreateObject("Scripting.FileSystemObject")
@@ -9848,7 +10717,122 @@ Set result = Nothing
 Set Shell = Nothing
 End Function
 ''
+''Begin ping status code result
+Function GetPingStatusCode(varCodeNum)
+    If IsNull(varCodeNum) Then
+        varCodeNum = 11006
+    End If
+    Select Case varCodeNum
+        Case 0
+            GetPingStatusCode = "Success"
+        Case 11001
+            GetPingStatusCode = "Buffer Too Small"
+        Case 11002
+            GetPingStatusCode = "Destination Net Unreachable"
+        Case 11003
+            GetPingStatusCode = "Destination Host Unreachable"
+        Case 11004
+            GetPingStatusCode = "Destination Protocol Unreachable"
+        Case 11005
+            GetPingStatusCode = "Destination Port Unreachable"
+        Case 11006
+            GetPingStatusCode = "No Resources"
+        Case 11007
+            GetPingStatusCode = "Bad Option"
+        Case 11008
+            GetPingStatusCode = "Hardware Error"
+        Case 11009
+            GetPingStatusCode = "Packet Too Big"
+        Case 11010, -1
+            GetPingStatusCode = "Request Timed Out"
+        Case 11011
+            GetPingStatusCode = "Bad Request"
+        Case 11012
+            GetPingStatusCode = "Bad Route"
+        Case 11013
+            GetPingStatusCode = "TimeToLive Expired Transit"
+        Case 11014
+            GetPingStatusCode = "TimeToLive Expired Reassembly"
+        Case 11015
+            GetPingStatusCode = "Parameter Problem"
+        Case 11016
+            GetPingStatusCode = "Source Quench"
+        Case 11017
+            GetPingStatusCode = "Option Too Big"
+        Case 11018
+            GetPingStatusCode = "Bad Destination"
+        Case 11032
+            GetPingStatusCode = "Negotiating IPSEC"
+        Case 11050
+            GetPingStatusCode = "General Failure"
+        Case Else 
+            GetPingStatusCode = "Unknown error"
+    End Select
+End Function
+''END ping status code result
+''
+''BEGIN ReadPingResult
+Function ReadTexFilePingResult
+pingResultFound = 0
+'DisplayLogIpscan "Trying to get Device Model...." 
+Set objFS = CreateObject("Scripting.FileSystemObject")
+Set objRegExp = new RegExp
+objRegExp.Pattern = "bytes=[0-9]"
+filename = "pingTestResultFile.txt"
+textFilePath = ReplaceWithSpace(GetToolCurrentDirectory &"\" &filename)
+Set objFile = objFS.OpenTextFile(textFilePath)
+stringToSplit =""
+Do Until objFile.AtEndOfStream
+strSearchString = objFile.ReadLine
+''
+''	MsgBox strSearchString
+foundStringIn = InStr(strSearchString,"bytes=")
+''MsgBox foundStringIn
+If foundStringIn <> 0 Then
+'stringFound  = Mid(strSearchString,foundStringIn,6)
+'stringToSplit = stringFound
+pingResultFound = 1
+Exit Do
+End If
+Loop
+''
+objFile.Close
+'MyString = (Trim(stringToSplit))
+'If MyString = "" Then
+'fullCurrentMAc = "NOT FOUND"
+'Else 
+'MyArray = Split(MyString," ", -1, 1)
+'fullCurrentMAc = MyArray(0) 
+''End If
+''MsgBox fullCurrentMAc
+ReadTexFilePingResult = pingResultFound
+End Function 
+''END ReadPingResult
+''
+''Begin testCheckInternet
 Function PingCheckInternet(telHost)
+resultTestSixtotoM = False
+On Error Resume Next
+filename = "pingTestResultFile.txt"
+yyyxyyyzPing = "ping -n 1 -w 4000"
+sCurPathAndFile = chr(34)& ReplaceWithSpace(GetToolCurrentDirectory &"\" &filename)&chr(34)
+CreateObject("WScript.Shell").Run "%comspec% /c "& yyyxyyyzPing &" " & telHost& " > " &sCurPathAndFile, 0, True
+If Err.Number = 0 Then
+If ReadTexFilePingResult = 0 Then
+resultTestSixtotoM = False
+Else
+resultTestSixtotoM = True
+End If
+Else
+resultTestSixtotoM = False
+Err.Clear
+End If 
+PingCheckInternet = resultTestSixtotoM
+End Function
+
+''End testCheckInternet
+Function PingCheckInternetOrig(telHost)
+''RefreshLanInterface
 Dim Shell, strCommand, result, ReturnCode
 ReturnCode = 1
 result = False
@@ -9864,6 +10848,10 @@ result = True
 Else
 result = False
 End If
+''
+''PingxTest = GetPingStatusCode(CBool(Shell.Run("%comspec% /c ping -n 1 -w 4000 " & telHost,0,True)))
+''MsgBox "Ping status code: "&PingxTest
+''
 PingCheckInternet = result
 Set ReturnCode = Nothing
 'MsgBox Ping
@@ -10264,10 +11252,15 @@ macDomainOrigGP = macDomainSnipe
 ClearTstCmndInOut 
 Sleeper 1000
 ConnectToTSTSnipeDv235t macToTestSnipe,macDomainSnipe
+
 ''CheckAfter reboot CALL BEGIN
+If radiobtnBm622m2013v19.checked Or radiobtnBm622m2012.checked Then
+Sleeper 2000
+Else
 If CheckDv235tAfterReboot = 0 Then
 ChangeSecurityOnlySnipeDv235t = 0
 Exit Function
+End If
 End if
 ''''CheckAfter reboot CALL END
 Sleeper 1000
@@ -10290,7 +11283,11 @@ macIsLive = "Dead"
 DisplayLogMacGenScan("Testing internet connection....")
 DisplayLogMacGenScan("PLEASE WAIT while the TESTING is not finish.... Number of tries is: " & snipeTryList.value)
 DisplayLogMacGenScan("DO NOT CLOSE the TOOL in this process. Use STOP to cancel process!!!")
+If radiobtnBm622m2013v19.checked Or radiobtnBm622m2012.checked Then
+Sleeper 2000
+Else
 Sleeper 10000
+End If
 ''
 ''begin check internet
 ''If (liveCount > 0) Then
@@ -10425,9 +11422,18 @@ Sleeper 1000
 If radiobtnDv235tG.checked Then
 DisplayLogMacGenScan("DV235t: Globe User!")
 TstCmndDv235tGlobeRebootSnipe currentMacSnipe,macDomainTST
+''
 ElseIf radiobtnDv235tS.checked Then
 DisplayLogMacGenScan("DV235t: Smart User!")
 TstCmndDv235tSmartRebootSnipe currentMacSnipe,macDomainTST
+''
+ElseIf radiobtnBm622m2013v19.checked Then
+DisplayLogMacGenScan("Bm622m 2013 v19: Turbo mode!")
+TstCmndBm622m2013v19RebootSnipe currentMacSnipe,macDomainTST
+''Or radiobtnBm622m2012.checked
+ElseIf radiobtnBm622m2012.checked Then
+DisplayLogMacGenScan("Bm622m 2012: Turbo mode!")
+TstCmnd622m2012RebootRestoreTurboSnipe currentMacSnipe,macDomainTST
 End If
 
 If hdnStopMacProcess.value = "1" Then
@@ -10448,7 +11454,11 @@ tsCmnd = "/r:" & Chr(34)& tstInputCmndFile & chr(34) & " /o:" & Chr(34)& tstLogC
 Sleeper 1000
 ''tstRunShell = objShellInGen.run ("tst10.exe " & tsCmnd ,0 , 1)
 ''changeMACLog.value = changeMACLog.value & vbCr & vbLf & "Trying to change MAC address..."
+If radiobtnBm622m2013v19.checked Or radiobtnBm622m2012.checked Then
+DisplayLogMacGenScan("Bm622m: Changing MAC and settings...")
+Else
 DisplayLogMacGenScan("DV235t: Changing MAC and settings...")
+End If
 ''begin if stop by user
 If hdnStopMacProcess.value = "1" Then
 Sleeper(1000)
@@ -10570,7 +11580,7 @@ MyArrayLength = UBound(MyArray) +1
 macDomain = MyArray(0)
 
 ''macPassword = "smart1_lancelot" ''Trim(generatePassword(macToTest)) 'userid and password
-macPassword = macPassword = Trim(MyArray(2))
+macPassword = Trim(MyArray(2))
 Sleeper 1000 
 myNai=Replace(macToTest,":","")
 Sleeper 1000
@@ -10623,15 +11633,25 @@ End Sub
 ''
 ''Checkdv235t REBOOT BEGIN
 Function CheckDv235tAfterReboot
+devices622m2013v19 = radiobtnBm622m2013v19.checked
 ''attach line 9710
+If devices622m2013v19 Then
+Sleeper 300
+Else 
 DisplayLogMacGenScan( "DV235t: Processing in approx. 75 seconds...." & vbCr & vbLf & "Device is Rebooting..." & vbCr & vbLf & "Waiting for the device...." )
 Sleeper 75000 ''35000
 ''
+End If
 liveCountHost = 0
 telnetHostLive = False
 Do 
+If devices622m2013v19 Then
+Sleeper 300
+DisplayLogMacGenScan( "Waiting for the device is finish...." & vbCr & vbLf & "Trying to connect after changes...")
+Else
 Sleeper 3000
 DisplayLogMacGenScan( "Waiting for the device is finish...." & vbCr & vbLf & "Trying to connect after reboot...")
+End If
 telnetHostLive = Ping(Trim(inputTelnetHost.value))
 'telnetHostLive = Ping("192.168.2.1")
 If	telnetHostLive = False Then
@@ -10677,7 +11697,7 @@ Else
 liveCountHost = 0
 CheckDv235tAfterReboot = 1
 'MsgBox "Connected"
-DisplayLogMacGenScan("DV235t: Connection success!!! Ok....")
+DisplayLogMacGenScan("Connection success!!! Ok....")
 Sleeper 1000
 ''If SnipeMacRadioOption = "REBOOT" Then
 ''begin if stop by user
@@ -10760,6 +11780,24 @@ set objFSO = Nothing
 Set Source = Nothing
 End Sub
 ''checkTELNETdv235t END
+''
+''checkTELNETbm622m2013v19 BEGIN
+Sub TstCmndbm622m2013v19tSnipeCheckTelnet(currentMac,tstInputCmndFile)	
+set objFSO = createobject("Scripting.FileSystemObject")
+Set Source = objFSO.CreateTextFile( tstInputCmndFile, True)
+Source.WriteLine (Trim(inputTelnetHost.value))
+Source.WriteLine ("WAIT "& chr(34) &"Login:"& chr(34)&"")
+Source.WriteLine ("SEND "& chr(34) & inputTelnetUname.value & "\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"Password:"& chr(34)&"")
+Source.WriteLine ("SEND "& chr(34) & inputTelnetPassowrd.value & "\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"#"& chr(34)&"")
+Source.WriteLine ("SEND "& chr(34) &"exit\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"exit"& chr(34)&"") 
+Source.Close
+set objFSO = Nothing
+Set Source = Nothing
+End Sub
+''checkTELNETbm622m2013v19 END
 ''
 Sub TstCmnd621Reboot(currentMac,tstInputCmndFile)	
 'MsgBox "Inside create Input command"
@@ -10851,7 +11889,368 @@ End Sub
 ''end 622 2011 REBOOT
 ''
 ''
-''begin 622 622m2012 REBOOT and RESTORE
+''begin 622m2013v19 REBOOT and RESTORE
+Sub TstCmnd622m2013v19RebootRestore(currentMac,tstInputCmndFile)
+currentFreqChangeMacOnly= Trim(drpDwnFrequency.value)
+freqisALL = False
+If currentFreqChangeMacOnly ="Allsmart" Or currentFreqChangeMacOnly ="Allglobe" Then
+freqisALL = True
+End If
+currentMacAddOne = IncrementMacbyOne(currentMac)
+wanMacEntry = Replace(currentMac ,":","")
+authUserName = inputDomainPassword.value & drpDwnNaiDomain.value
+authUserPass = inputDomainPassword.value
+naiUserName = inputNai.value & drpDwnNaiDomain.value
+set objFSO = createobject("Scripting.FileSystemObject")
+Set Source = objFSO.CreateTextFile( tstInputCmndFile, True)
+Source.WriteLine (Trim(inputTelnetHost.value))
+Source.WriteLine ("WAIT "& chr(34) &"Login:"& chr(34)&"")
+Source.WriteLine ("SEND "& chr(34) & inputTelnetUname.value & "\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"Password:"& chr(34)&"")
+Source.WriteLine ("SEND "& chr(34) & inputTelnetPassowrd.value & "\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"#"& chr(34)&"")
+Source.WriteLine ("SEND "& chr(34) &"ifconfig wmx0 down\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"#"& chr(34)&"") 
+Source.WriteLine ("SEND "& chr(34) &"sncfg dset WAN_MAC_ENCRY " &wanMacEntry & "\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"#"& chr(34)&"")
+Source.WriteLine ("SEND "& chr(34) &"sncfg dset WAN_MAC " &currentMac & "\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"#"& chr(34)&"")
+Source.WriteLine ("SEND "& chr(34) &"sncfg dset LAN_MAC " &currentMacAddOne & "\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"#"& chr(34)&"")
+Source.WriteLine ("SEND "& chr(34) &"sncfg dset WMX_AUTH_MODE 1" & "\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"#"& chr(34)&"")
+Source.WriteLine ("SEND "& chr(34) &"sncfg dset WMX_ANONYMOUS_ID " &naiUserName & "\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"#"& chr(34)&"")
+Source.WriteLine ("SEND "& chr(34) &"sncfg dset WMX_USER_NAME " &authUserName & "\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"#"& chr(34)&"")
+Source.WriteLine ("SEND "& chr(34) &"sncfg dset WMX_PASSW " &authUserPass & "\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"#"& chr(34)&"")
+Source.WriteLine ("SEND "& chr(34) &"sncfg commit\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"#"& chr(34)&"")
+Source.WriteLine ("SEND "& chr(34) &"sncfg reload\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"#"& chr(34)&"")
+Source.WriteLine ("SEND "& chr(34) &"sncfg default\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"#"& chr(34)&"")
+''
+If freqisALL = False Then
+Source.WriteLine ("SEND "& chr(34) &"sncfg set WMX_FREQ_LIST " &currentFreqChangeMacOnly & "\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"#"& chr(34)&"")
+Source.WriteLine ("SEND "& chr(34) &"sncfg commit\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"#"& chr(34)&"")
+Source.WriteLine ("SEND "& chr(34) &"sncfg reload\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"#"& chr(34)&"")
+End If
+''
+Source.WriteLine ("SEND "& chr(34) &"ifconfig wmx0 down\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"#"& chr(34)&"") 
+Source.WriteLine ("SEND "& chr(34) &"ifconfig wmx0 hw ether " &currentMac & "\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"#"& chr(34)&"") 
+Source.WriteLine ("SEND "& chr(34) &"ifconfig wmx0 up\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"#"& chr(34)&"")
+Source.WriteLine ("SEND "& chr(34) &"sncfg wimax disconnect\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"#"& chr(34)&"") 
+Source.WriteLine ("SEND "& chr(34) &"sncfg wimax connect\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"#"& chr(34)&"")
+Source.WriteLine ("SEND "& chr(34) &"exit\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"exit"& chr(34)&"") 
+''Source.WriteLine ("WAIT "& chr(34) &"reboot"& chr(34)&"") 
+Source.Close
+'changeMACLog.value = changeMACLog.value & vbCr & vbLf & "Create ok..."
+set objFSO = Nothing
+Set Source = Nothing
+End Sub
+''telnet is not disabled and security is autofill
+''end 622m2013v19 REBOOT and RESTORE
+''
+''
+''TstCmndBm622m2013v19RebootSnipe BEGIN
+Sub TstCmndBm622m2013v19RebootSnipe(macToTest,macDomain)
+currentFreqSnipe = Trim(drpDwnFrequencySnipe.value)
+freqisALL = False
+If currentFreqSnipe ="Allsmart" Or currentFreqSnipe ="Allglobe" Then
+freqisALL = True
+End If
+macPassword = ""
+macDomainOrig = macDomain
+currentMacAddOne = IncrementMacbyOne(macToTest)
+filenameInput =  "TelnetInputCmnd.txt"
+tstInputCmndFile = ReplaceWithSpace(GetToolCurrentDirectory &"\" &filenameInput)
+''isTTLS = True
+''domainList = "@globetel.com.ph"
+MyString = (Trim(macDomain))
+MyArray = Split(MyString, ",", -1, 1)
+MyArrayLength = UBound(MyArray) +1
+''MsgBox MyArrayLength
+''If macDomain = "@globelines.com.ph,TLS" Then
+''If MyArrayLength = 2 Then
+macDomain = MyArray(0)
+''macPassword = Trim(generatePassword(macToTest)) 'userid and password
+macPassword = Trim(MyArray(2))
+Sleeper 1000 
+myNai=Replace(macToTest,":","")
+Sleeper 1000
+macNai =UCase(myNai)
+advancePassUidAndPass = Trim(patternPassDropdwnList.value)
+getMAcLastLength = Cint(numberOfDigitHexDropdwnList.value)
+myCurrenMaclastHex = LCase(Mid(myNai,getMAcLastLength)) '' Return all characters, starting at postion 10
+
+authUserName = macPassword & macDomain  
+authUserPass = macPassword
+naiUserName = macNai & macDomain 
+If chkAdvancePass.Checked Then
+''xpass begin
+If patternPassDropdwnList.value = "gemtek" Then
+authUserName = macNai & macDomain
+authUserPass = macNai
+Else
+authUserName = advancePassUidAndPass & myCurrenMaclastHex & macDomain 
+authUserPass = advancePassUidAndPass & myCurrenMaclastHex
+End If
+''xpass end
+End If
+set objFSO = createobject("Scripting.FileSystemObject")
+Set Source = objFSO.CreateTextFile( tstInputCmndFile, True)
+Source.WriteLine (Trim(inputTelnetHost.value))
+Source.WriteLine ("WAIT "& chr(34) &"Login:"& chr(34)&"")
+Source.WriteLine ("SEND "& chr(34) & inputTelnetUname.value & "\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"Password:"& chr(34)&"")
+Source.WriteLine ("SEND "& chr(34) & inputTelnetPassowrd.value & "\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"#"& chr(34)&"")
+Source.WriteLine ("SEND "& chr(34) &"ifconfig wmx0 down\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"#"& chr(34)&"") 
+Source.WriteLine ("SEND "& chr(34) &"sncfg dset WAN_MAC_ENCRY " &macNai & "\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"#"& chr(34)&"")
+Source.WriteLine ("SEND "& chr(34) &"sncfg dset WAN_MAC " &UCase(macToTest) & "\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"#"& chr(34)&"")
+Source.WriteLine ("SEND "& chr(34) &"sncfg dset LAN_MAC " &UCase(currentMacAddOne) & "\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"#"& chr(34)&"")
+Source.WriteLine ("SEND "& chr(34) &"sncfg dset WMX_AUTH_MODE 1" & "\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"#"& chr(34)&"")
+Source.WriteLine ("SEND "& chr(34) &"sncfg dset WMX_ANONYMOUS_ID " &naiUserName & "\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"#"& chr(34)&"")
+Source.WriteLine ("SEND "& chr(34) &"sncfg dset WMX_USER_NAME " &authUserName & "\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"#"& chr(34)&"")
+Source.WriteLine ("SEND "& chr(34) &"sncfg dset WMX_PASSW " &authUserPass & "\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"#"& chr(34)&"")
+Source.WriteLine ("SEND "& chr(34) &"sncfg commit\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"#"& chr(34)&"")
+Source.WriteLine ("SEND "& chr(34) &"sncfg reload\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"#"& chr(34)&"")
+Source.WriteLine ("SEND "& chr(34) &"sncfg default\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"#"& chr(34)&"")
+''
+If freqisALL = False Then
+Source.WriteLine ("SEND "& chr(34) &"sncfg set WMX_FREQ_LIST " &currentFreqSnipe & "\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"#"& chr(34)&"")
+Source.WriteLine ("SEND "& chr(34) &"sncfg commit\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"#"& chr(34)&"")
+Source.WriteLine ("SEND "& chr(34) &"sncfg reload\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"#"& chr(34)&"")
+End If
+''
+Source.WriteLine ("SEND "& chr(34) &"ifconfig wmx0 down\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"#"& chr(34)&"") 
+Source.WriteLine ("SEND "& chr(34) &"ifconfig wmx0 hw ether " &UCase(macToTest) & "\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"#"& chr(34)&"") 
+Source.WriteLine ("SEND "& chr(34) &"ifconfig wmx0 up\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"#"& chr(34)&"")
+Source.WriteLine ("SEND "& chr(34) &"sncfg wimax disconnect\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"#"& chr(34)&"") 
+Source.WriteLine ("SEND "& chr(34) &"sncfg wimax connect\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"#"& chr(34)&"") 
+Source.WriteLine ("SEND "& chr(34) &"exit\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"exit"& chr(34)&"") 
+''Source.WriteLine ("WAIT "& chr(34) &"reboot"& chr(34)&"") 
+Source.Close
+set objFSO = Nothing
+Set Source = Nothing
+End Sub
+''TstCmndBm622m2013v19RebootSnipe END
+''
+''begin 622m2012Turbo REBOOT and RESTORE
+Sub TstCmnd622m2012RebootRestoreTurbo(currentMac,tstInputCmndFile)
+currentFreqChangeMacOnly= Trim(drpDwnFrequency.value)
+''freqisALL = False
+If currentFreqChangeMacOnly ="Allsmart" Or currentFreqChangeMacOnly ="Allglobe" Then
+''freqisALL = True
+currentFreqChangeMacOnly = "2507500,2602000,2612000,2638000,2622000,2505000,2510000"
+End If
+currentMacAddOne = IncrementMacbyOne(currentMac)
+wanMacEntry = Replace(currentMac ,":","")
+authUserName = inputDomainPassword.value & drpDwnNaiDomain.value
+authUserPass = inputDomainPassword.value
+naiUserName = inputNai.value & drpDwnNaiDomain.value
+set objFSO = createobject("Scripting.FileSystemObject")
+Set Source = objFSO.CreateTextFile( tstInputCmndFile, True)
+Source.WriteLine (Trim(inputTelnetHost.value))
+Source.WriteLine ("WAIT "& chr(34) &"Login:"& chr(34)&"")
+Source.WriteLine ("SEND "& chr(34) & inputTelnetUname.value & "\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"Password:"& chr(34)&"")
+Source.WriteLine ("SEND "& chr(34) & inputTelnetPassowrd.value & "\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"#"& chr(34)&"")
+Source.WriteLine ("SEND "& chr(34) &"ifconfig wmx0 down\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"#"& chr(34)&"")
+Source.WriteLine ("SEND "& chr(34) &"sncfg dset WAN_MAC_ENCRY " &wanMacEntry & "\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"#"& chr(34)&"")
+Source.WriteLine ("SEND "& chr(34) &"sncfg dset WAN_MAC " &currentMac & "\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"#"& chr(34)&"")
+Source.WriteLine ("SEND "& chr(34) &"sncfg dset LAN_MAC " &currentMacAddOne & "\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"#"& chr(34)&"")
+Source.WriteLine ("SEND "& chr(34) &"sncfg dset WMX_ANONYMOUS_ID " &naiUserName & "\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"#"& chr(34)&"")
+Source.WriteLine ("SEND "& chr(34) &"sncfg dset WMX_USER_NAME " &authUserName & "\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"#"& chr(34)&"")
+Source.WriteLine ("SEND "& chr(34) &"sncfg dset WMX_PASSW " &authUserPass & "\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"#"& chr(34)&"")
+Source.WriteLine ("SEND "& chr(34) &"sncfg commit\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"#"& chr(34)&"")
+Source.WriteLine ("SEND "& chr(34) &"sncfg reload\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"#"& chr(34)&"")
+Source.WriteLine ("SEND "& chr(34) &"sncfg set WMX_ANONYMOUS_ID " &naiUserName & "\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"#"& chr(34)&"")
+Source.WriteLine ("SEND "& chr(34) &"sncfg set WMX_USER_NAME " &authUserName & "\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"#"& chr(34)&"")
+Source.WriteLine ("SEND "& chr(34) &"sncfg set WMX_PASSW " &authUserPass & "\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"#"& chr(34)&"")
+''
+''If freqisALL = False Then
+Source.WriteLine ("SEND "& chr(34) &"sncfg set WMX_FREQ_LIST " &currentFreqChangeMacOnly & "\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"#"& chr(34)&"")
+Source.WriteLine ("SEND "& chr(34) &"sncfg commit\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"#"& chr(34)&"")
+Source.WriteLine ("SEND "& chr(34) &"sncfg reload\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"#"& chr(34)&"")
+''End If
+Source.WriteLine ("SEND "& chr(34) &"ifconfig wmx0 down\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"#"& chr(34)&"")  
+Source.WriteLine ("SEND "& chr(34) &"ifconfig wmx0 hw ether " &currentMac & "\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"#"& chr(34)&"") 
+Source.WriteLine ("SEND "& chr(34) &"ifconfig wmx0 up\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"#"& chr(34)&"")
+Source.WriteLine ("SEND "& chr(34) &"sncfg wimax disconnect\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"#"& chr(34)&"")
+Source.WriteLine ("SEND "& chr(34) &"sncfg wimax connect\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"#"& chr(34)&"")
+Source.WriteLine ("SEND "& chr(34) &"exit\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"exit"& chr(34)&"") 
+''Source.WriteLine ("WAIT "& chr(34) &"reboot"& chr(34)&"") 
+Source.Close
+'changeMACLog.value = changeMACLog.value & vbCr & vbLf & "Create ok..."
+set objFSO = Nothing
+Set Source = Nothing
+End Sub
+''telnet is not disabled and security is autofill
+''end 622m2012Turbo REBOOT and RESTORE
+''
+''begin 622m2012TurboSnipe
+Sub TstCmnd622m2012RebootRestoreTurboSnipe(macToTest,macDomain)
+currentFreqSnipe=  Trim(drpDwnFrequencySnipe.value)
+''freqisALL = False
+If currentFreqSnipe ="Allsmart" Or currentFreqSnipe ="Allglobe" Then
+''freqisALL = True
+currentFreqSnipe = "2507500,2602000,2612000,2638000,2622000,2505000,2510000"
+End If
+macPassword = ""
+macDomainOrig = macDomain
+currentMacAddOne = IncrementMacbyOne(macToTest)
+filenameInput =  "TelnetInputCmnd.txt"
+tstInputCmndFile = ReplaceWithSpace(GetToolCurrentDirectory &"\" &filenameInput)
+''isTTLS = True
+''domainList = "@globetel.com.ph"
+MyString = (Trim(macDomain))
+MyArray = Split(MyString, ",", -1, 1)
+MyArrayLength = UBound(MyArray) +1
+''MsgBox MyArrayLength
+''If macDomain = "@globelines.com.ph,TLS" Then
+''If MyArrayLength = 2 Then
+macDomain = MyArray(0)
+''macPassword = Trim(generatePassword(macToTest)) 'userid and password
+macPassword = Trim(MyArray(2))
+Sleeper 1000 
+myNai=Replace(macToTest,":","")
+Sleeper 1000
+macNai =UCase(myNai)
+advancePassUidAndPass = Trim(patternPassDropdwnList.value)
+getMAcLastLength = Cint(numberOfDigitHexDropdwnList.value)
+myCurrenMaclastHex = LCase(Mid(myNai,getMAcLastLength)) '' Return all characters, starting at postion 10
+
+authUserName = macPassword & macDomain  
+authUserPass = macPassword
+naiUserName = macNai & macDomain 
+If chkAdvancePass.Checked Then
+''xpass begin
+If patternPassDropdwnList.value = "gemtek" Then
+authUserName = macNai & macDomain
+authUserPass = macNai
+Else
+authUserName = advancePassUidAndPass & myCurrenMaclastHex & macDomain 
+authUserPass = advancePassUidAndPass & myCurrenMaclastHex
+End If
+''xpass end
+End If
+set objFSO = createobject("Scripting.FileSystemObject")
+Set Source = objFSO.CreateTextFile( tstInputCmndFile, True)
+Source.WriteLine (Trim(inputTelnetHost.value))
+Source.WriteLine ("WAIT "& chr(34) &"Login:"& chr(34)&"")
+Source.WriteLine ("SEND "& chr(34) & inputTelnetUname.value & "\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"Password:"& chr(34)&"")
+Source.WriteLine ("SEND "& chr(34) & inputTelnetPassowrd.value & "\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"#"& chr(34)&"")
+Source.WriteLine ("SEND "& chr(34) &"ifconfig wmx0 down\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"#"& chr(34)&"")
+Source.WriteLine ("SEND "& chr(34) &"sncfg dset WAN_MAC_ENCRY " &macNai & "\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"#"& chr(34)&"")
+Source.WriteLine ("SEND "& chr(34) &"sncfg dset WAN_MAC " &UCase(macToTest) & "\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"#"& chr(34)&"")
+Source.WriteLine ("SEND "& chr(34) &"sncfg dset LAN_MAC " &UCase(currentMacAddOne) & "\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"#"& chr(34)&"")
+Source.WriteLine ("SEND "& chr(34) &"sncfg dset WMX_ANONYMOUS_ID " &naiUserName & "\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"#"& chr(34)&"")
+Source.WriteLine ("SEND "& chr(34) &"sncfg dset WMX_USER_NAME " &authUserName & "\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"#"& chr(34)&"")
+Source.WriteLine ("SEND "& chr(34) &"sncfg dset WMX_PASSW " &authUserPass & "\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"#"& chr(34)&"")
+Source.WriteLine ("SEND "& chr(34) &"sncfg commit\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"#"& chr(34)&"")
+Source.WriteLine ("SEND "& chr(34) &"sncfg reload\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"#"& chr(34)&"")
+Source.WriteLine ("SEND "& chr(34) &"sncfg set WMX_ANONYMOUS_ID " &naiUserName & "\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"#"& chr(34)&"")
+Source.WriteLine ("SEND "& chr(34) &"sncfg set WMX_USER_NAME " &authUserName & "\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"#"& chr(34)&"")
+Source.WriteLine ("SEND "& chr(34) &"sncfg set WMX_PASSW " &authUserPass & "\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"#"& chr(34)&"")
+''
+''If freqisALL = False Then
+Source.WriteLine ("SEND "& chr(34) &"sncfg set WMX_FREQ_LIST " &currentFreqSnipe & "\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"#"& chr(34)&"")
+Source.WriteLine ("SEND "& chr(34) &"sncfg commit\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"#"& chr(34)&"")
+Source.WriteLine ("SEND "& chr(34) &"sncfg reload\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"#"& chr(34)&"")
+''End If
+Source.WriteLine ("SEND "& chr(34) &"ifconfig wmx0 down\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"#"& chr(34)&"")  
+Source.WriteLine ("SEND "& chr(34) &"ifconfig wmx0 hw ether " &UCase(macToTest) & "\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"#"& chr(34)&"") 
+Source.WriteLine ("SEND "& chr(34) &"ifconfig wmx0 up\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"#"& chr(34)&"")
+Source.WriteLine ("SEND "& chr(34) &"sncfg wimax disconnect\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"#"& chr(34)&"")
+Source.WriteLine ("SEND "& chr(34) &"sncfg wimax connect\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"#"& chr(34)&"")
+Source.WriteLine ("SEND "& chr(34) &"exit\m"& chr(34)&"")
+Source.WriteLine ("WAIT "& chr(34) &"exit"& chr(34)&"") 
+''Source.WriteLine ("WAIT "& chr(34) &"reboot"& chr(34)&"") 
+Source.Close
+'changeMACLog.value = changeMACLog.value & vbCr & vbLf & "Create ok..."
+set objFSO = Nothing
+Set Source = Nothing
+End Sub
+''telnet is not disabled and security is autofill
+''end 622m2012TurboSnipe
+''
+''begin 622m2012 REBOOT and RESTORE
 Sub TstCmnd622m2012RebootRestore(currentMac,tstInputCmndFile)
 currentMacAddOne = IncrementMacbyOne(currentMac)
 wanMacEntry = Replace(currentMac ,":","")
@@ -11236,8 +12635,13 @@ LogLiveIp.Value = "Status idle...."
 DisplayLogIpscan "Unable to restore last IP to be scan...is now restoring defaults..."
 currentLiveIp.value = 0
 End If
-
 End Sub
+''
+'Sub startIptestx
+'subStr = "Y2hlY2tUaW1lcldhaXRPaw=="
+'ExecuteGlobal base64decode(subStr)
+'End Sub
+''
 Sub PasteTextIpAddScan
 InputStartIp.value = Trim(document.parentwindow.clipboardData.GetData("text"))
 OnKeyUpDownInputIpStartAdd
@@ -11470,6 +12874,50 @@ populateCurrentLiveIpScan
 DisplayLogIpscan ipAdd & "........ Process SUCCESS!!!(Saved in TAB MENU ""MAC TABLE/LIST"")"
 End Sub
 ''
+''Begin Test getMACandSerial 622m2013v19
+Function GetTestMACandSerial622m
+wanAndLan = "NA"
+deviceFullSerial = "NA"
+wanAndLan = GetFullMAC
+deviceFullSerial = GetSerial
+
+MyStringWanMac = (Trim(wanAndLan))
+MyArrayWanMac = Split(MyStringWanMac, "|", -1, 1)
+''wanMac = MyArrayWanMac(0) 
+wanMac = Replace(MyArrayWanMac(0) ,":","")
+MyStringSerial = (Trim(deviceFullSerial))
+''
+If MyStringSerial = "NOT FOUND" Then
+GetTestMACandSerial622m = "NA"
+MsgBox "Serial could not be retrieve please CHECK or reboot your REBOOT device.... And TRY AGAIN!"
+Exit Function
+End If 
+''
+MyArraySerial = Split(MyStringSerial, "-", -1, 1)
+deviceSerial = MyArraySerial(1) 
+'saveToFile = saveToFile &"|"& GetSerial
+''textFilePath = filenameToSave'"IpInfo.txt"
+''filename = filenameToSave
+''textFilePath = ReplaceWithSpace(GetToolCurrentDirectory &"\" &filename)
+'	If MacIsInTheList(textFilePath,saveToFile) = True Then
+'	DisplayLogIpscan "APPEND MAC FAILED: Live IP MAC is already in the list......"
+'	Exit Sub
+'	End if
+''saveToFile = saveToFile &"|"& ipAdd
+''Wscript.Echo saveToFile
+''ipaddressInfo = ipAdd &"|"& saveToFile &"|"& "0 Mbps"
+''ipaddressInfo = saveToFile &"|"&  GetSerial&"|"& "0 Mbps"
+''ipaddressInfo = saveToFile &"|"&  GetSerial&"|"& GetDeviceModel
+resultTestMacSerial = TestingMacOnlyGenAdmin(deviceSerial,wanMac)
+''DisplayLogIpscan resultTestMacSerial
+''appendIpToFile ipaddressInfo,filenameToSave
+''currentLiveIp.value = currentLiveIp.value + 1
+''populateCurrentLiveIpScan
+''DisplayLogIpscan "Processing......" & ipAdd & ". Success!!!(Saved in TAB MENU ""MAC TABLE/LIST"")"
+''DisplayLogIpscan ipAdd & "........ Process SUCCESS!!!(Saved in TAB MENU ""MAC TABLE/LIST"")"
+GetTestMACandSerial622m =resultTestMacSerial
+End Function
+''End Test getMACandSerial 622m2013v19
 ''
 Sub SaveInfoOfIPUsingRegSmart(ipAdd,filenameToSave,stringMACInfo)
 saveToFile = "NA"
@@ -11668,6 +13116,7 @@ End Function
 ''
 Function GetSerial
 ''DisplayLogIpscan "Trying to get SERIAL...." 
+fullCurrentMAc = ""
 Set objFS = CreateObject("Scripting.FileSystemObject")
 Set objRegExp = new RegExp
 objRegExp.Pattern = "[0-9a-zA-Z]{6}-.*[0-9a-zA-Z]"
@@ -11686,7 +13135,10 @@ Next
 objFile.Close
 MyString = (Trim(fullCurrentMAc))
 If MyString = "" Then
+fullCurrentMAc = GetSerialIfNotFound
+If fullCurrentMAc = "NOT FOUND" Or fullCurrentMAc = ""  Then
 fullCurrentMAc = "NOT FOUND"
+End If
 Else 
 MyArray = Split(MyString," ", -1, 1)
 fullCurrentMAc = MyArray(0) 
@@ -11695,6 +13147,45 @@ End If
 'MsgBox fullCurrentMAc
 GetSerial = fullCurrentMAc
 End Function
+''
+Function GetSerialIfNotFound
+''DisplayLogIpscan "Trying to get SERIAL...." 
+fullCurrentMAc = ""
+Set objFS = CreateObject("Scripting.FileSystemObject")
+Set objRegExp = new RegExp
+objRegExp.Pattern = "-[0-9a-zA-Z].*(\S+)"
+filename = "savePage.txt"
+textFilePath = ReplaceWithSpace(GetToolCurrentDirectory &"\" &filename)
+Set objFile = objFS.OpenTextFile(textFilePath)
+strFileContents = objFile.ReadAll
+arrLines = Split(strFileContents,vbNewLine)
+countSerialFound = 0
+For Each strLine in arrLines
+If countSerialFound = 1 Then
+Exit For
+End If
+Set colMatches = objRegExp.Execute(strLine)
+For Each strMatch in colMatches
+fullCurrentMAc  = UCase(strMatch)
+'MsgBox fullCurrentMAc
+If countSerialFound = 1 Then
+Exit For
+End If
+Next
+Next
+objFile.Close
+MyString = (Trim(fullCurrentMAc))
+If MyString = "" Then
+fullCurrentMAc = "NOT FOUND"
+Else 
+MyArray = Split(MyString," ", -1, 1)
+fullCurrentMAc = MyArray(0) 
+End If
+
+'MsgBox fullCurrentMAc
+GetSerialIfNotFound = fullCurrentMAc
+End Function
+''
 Function GetFullMAC
 ''DisplayLogIpscan "Trying to get MAC...." 
 Set objFS = CreateObject("Scripting.FileSystemObject")
@@ -12300,6 +13791,89 @@ End Function
 ''
 ''END Login to GET ADMIN PASS 622 2011
 ''
+''BEGIN get 622m2013v19 MAC
+''
+Function ScanIPgetMac622m2013v19(displaylogTo,ipHost)
+ClearSaveWebPage("savePage.txt")
+On Error Resume Next
+KillInternetExplorer
+Sleeper 1000
+resultScan = False
+Set IE = CreateObject("InternetExplorer.Application")
+''Set activateIE = CreateObject("WScript.Shell")          
+IE.Width = 200
+IE.Height = 300
+IE.Left = 0
+IE.Top = 0 
+IE.AddressBar = False
+IE.MenuBar = False
+IE.Toolbar = False
+IE.Visible = 0
+IE.navigate "http://" & ipHost
+''On Error Resume Next
+''Sleeper 3000 
+WaitIEtoLoad(IE)
+
+IsUsernameExist = False
+checkCountName = 0
+Do
+checkCountName = checkCountName + 1
+IsUsernameExist = False
+''WaitIEtoLoad(IE)
+IsUsernameExist = TestObjectDeviceInfoTableSixTTMIpScan(IE) ''TestObjectUsername(IE,inputWebAdminUname.value)
+If IsUsernameExist Then
+	resultScan = True
+	''DisplayLogIpscan "Accessing Device Info page... Ok!"
+	Sleeper 1000
+	ScanIPgetMac622m2013v19 = resultScan
+	KillInternetExplorer
+	Sleeper 1000
+	Exit Function
+Else
+If checkCountName = 3 Or checkCountName = 10 Or checkCountName = 15 Or checkCountName = 25 Then
+IE.Refresh
+''
+''
+ElseIf checkCountName = 35 Then
+DisplayLog displaylogTo,  ipHost & ".... is taking TOO LONG to respond. Connection Terminated..."
+deniedAccess = ipHost & ".... is taking TOO LONG to respond.....(Please access it manually)"
+createTxtLogError(deniedAccess)
+IE.Quit
+Sleeper 1000
+ScanIPgetMac622m2013v19 = resultScan
+Exit Function
+End If
+If checkCountName = 3 Or  checkCountName = 6 Or checkCountName = 9 Or checkCountName = 17 Then
+Sleeper 2000
+Dim strTitle : strTitle = UCase(IE.Document.Title)
+If InStr(strTitle, "CANNOT") <> 0 OR InStr(strTitle, "CAN'T") <> 0 Then 
+''IE6,8,9''If InStr(strTitle, "CANNOT") <> 0 Then 
+DisplayLogIpscan  ipHost & "........ is ALIVE! but SECURED!!! (It's not accessible...)"
+IE.Quit
+Sleeper 1000
+ScanIPgetMac622m2013v19 = resultScan
+Exit Function
+End If
+End If
+
+End If
+Sleeper 2000
+If hdnStopMacProcess.value = "1" Then
+Sleeper 1000
+hdnStopProcessResult.value = "1"
+DisplayLogIpscan("Stopping process....Ok!")
+IE.Quit
+ScanIPgetMac622m2013v19 = resultScan
+Exit Function
+End If
+Loop While IsUsernameExist = False
+IsUsernameExist = False
+checkCountName = 0
+IE.Quit
+ScanIPgetMac622m2013v19 = resultScan
+End Function
+''
+''END get 622m2013v19 MAC
 ''
 ''BEGIN new TEST get MAC
 ''
@@ -13028,6 +14602,8 @@ CreateObject("WScript.Shell").Run Chr(34)& currentFolderAndFile & chr(34) &" " &
 ''ExecuteSleeperVbs MSecs,"sleeperFile"
 ''objShell.ShellExecute "wscript", Chr(34)& currentFolderAndFile & chr(34) &" " &sleepTimeSec, currentWorkingFolder, ""
 End Sub 'end Sleeper
+Sub checkTimerWaitOk
+End Sub
 Sub pressOkOld
 Set fso = CreateObject("Scripting.FileSystemObject")
 If Fso.FileExists("pressOk.vbs")=False Then
@@ -13305,6 +14881,29 @@ copyToClipBoard(Get6222011PassOnly(1))
 DisplayLog 1, "Copying DECODED Password to clipboard finished......"
 DisplayLog 1, "Use CTRL+V/PASTE to use the Password..."
 End if 
+ElseIf radiobtnBm622m2013v19.checked Or radiobtnBm622m2012.checked Then
+changeMACLog.value = "Status idle...."
+DisplayLog 1, "Process started......"
+getmacPass = "NA"
+If radiobtnWebAdminCus.Checked Then
+	If inputWebAdminPassowrd.value <> Trim("[ Forbidden ]") then
+	getmacPass = Trim(inputWebAdminPassowrd.value)
+	Else
+	DisplayLog 1, "Please WAIT this may take for a WHILE!......"
+	getmacPass = TestingGetAdminSixtotoM(1)
+	End If 
+Else
+	DisplayLog 1, "Please WAIT this may take for a WHILE!......"
+	getmacPass = TestingGetAdminSixtotoM(1)
+End If
+copyToClipBoard(getmacPass)
+If getmacPass = "NA" Then
+	DisplayLog 1, "Please check your device mac and serial, or try to REBOOT your device."
+	DisplayLog 1, "Error in getting device information."
+	Exit Sub
+End If
+DisplayLog 1, "Copying GENERATED Password to clipboard finished......"
+DisplayLog 1, "Use CTRL+V/PASTE to use the Password..."
 Else
 getmacPass = generatePassword(Trim(inputChangeMacOne.value))
 copyToClipBoard(getmacPass)
@@ -13318,7 +14917,9 @@ copyToClipBoard(Trim(inputWebAdminPassowrd.value))
 End If 
 End If
 If radiobtnDv235tG.checked Or radiobtnDv235tS.checked Then
-copyToClipBoard("NOT_YET_AVAILABLE")
+''copyToClipBoard("NOT_YET_AVAILABLE")
+copyToClipBoard(Trim(inputTelnetPassowrd.value))
+DisplayLog 1, "Use CTRL+V/PASTE to use the Password..."
 End If 
 DisplayLog 1, "Trying to access " & inputTelnetHost.value
 CreateObject("WScript.Shell").Run("http://" & inputTelnetHost.value)
@@ -13626,6 +15227,7 @@ onclick="VBScript:ChangeMacTest" class="btn" title=" &#8226; Click to change MAC
 <b>Frequency:&nbsp; </b></span>
 <select style=" font-size: 12; font-family: Trebuchet MS, Helvetica, sans-serif, Tahoma;" tabindex="" size="1" id="drpDwnFrequency"
 name="drpDwnFrequency" onchange="" >
+<option value="Allglobe">ALL-G Khz</option>
 <option value="2507500">2507500 Khz</option>
 <option value="2602000">2602000 Khz</option>
 <option value="2612000">2612000 Khz</option>
@@ -13633,14 +15235,13 @@ name="drpDwnFrequency" onchange="" >
 <option value="2622000">2622000 Khz</option>
 <option value="2505000">2505000 Khz</option>
 <option value="2510000">2510000 Khz</option>
-<option value="Allglobe">ALL-G Khz</option>
+<option value="Allsmart">ALL-S Khz</option>
 <option value="2337500">2337500-S Khz</option>
 <option value="2347500">2347500-S Khz</option>
 <option value="2357500">2357500-S* Khz</option>
 <option value="2345000">2345000-S Khz</option>
 <option value="2355000">2355000-S Khz</option>
 <option value="2365000">2365000-S Khz</option>
-<option value="Allsmart">ALL-S Khz</option>
 </select>
 <span style="font-size: 12; color: White; font-weight: normal; margin-left: 8px;
 font-family: Trebuchet MS, Helvetica, sans-serif, Tahoma;"><b></b></span>
@@ -13678,7 +15279,10 @@ name="drpDwnNaiDomain" onchange="" >
 <option value="@huawei.com">@huawei.com</option>
 <option value="@globetel.com.ph">@globetel.com.ph</option>
 <option value="@innove.com.ph">@innove.com.ph</option>
+<option value="@globe2mb.com.ph">@globe2mb.com.ph</option>
+<option value="@globe8mb.com.ph">@globe8mb.com.ph</option>
 <option value="@smartbro.net">@smartbro.net</option>
+
 </select>
 <div style="height: 5px;">
 <!--comment-->
@@ -13693,6 +15297,8 @@ name="drpDwnUserIdDomain" onchange="">
 <option value="@huawei.com">@huawei.com</option>
 <option value="@globetel.com.ph">@globetel.com.ph</option>
 <option value="@innove.com.ph">@innove.com.ph</option>
+<option value="@globe2mb.com.ph">@globe2mb.com.ph</option>
+<option value="@globe8mb.com.ph">@globe8mb.com.ph</option>
 <option value="@smartbro.net">@smartbro.net</option>
 </select><br>
 <div style="height: 5px;">
@@ -13746,12 +15352,28 @@ color: White; font-weight: normal; font-family: Trebuchet MS, Helvetica, sans-se
 <tr>
 <td style="background-color:#330000;">
 <div style="margin-left: 8px; margin-bottom: 2px; margin-top: 1px;">
-<center>
-<label title ="Change MAC using REBOOT method."><input  type="radio" id="SnipeMacOptionReboot" name="SnipeMacOption" value="REBOOT" checked  onclick ="Vbscript:SnipeMacRadioOption"/><span style="font-size: 12;
+
+
+<label title ="Select Generate Mode"><span id = "spanSnipeMode" style="display: inline-block; width: 90px; font-size: 12; color: White; font-weight: normal; font-family: Trebuchet MS, Helvetica, sans-serif, Tahoma;">
+<b>Hunt Mode:</b></span>
+<select  style="margin-left:-25px; padding-right:10px; font-size: 12;font-family: Trebuchet MS, Helvetica, sans-serif, Tahoma;" tabindex="" size="1" id="snipeModeDropdwnList"
+name="snipeModeDropdwnList" onchange="VBScript:snipeModeSub" >
+<option value="1">Normal Hunt</option>
+<option value="2">Vip Hunt(2digit)</option>
+<option value="3">Vip Hunt(3didit)</option>
+<option value="4">gct Hunt(4digit)</option>
+<option value="5">gct Hunt(5digit)</option>
+<option value="6">globe Hunt(4digit)</option>
+<option value="7">globe Hunt(5digit)</option>
+<option value="8">Vip Hunt(Auto)</option>
+</select></label>
+
+<label title ="Change MAC using REBOOT method." style="margin-left:40px;"><input  type="radio" id="SnipeMacOptionReboot" name="SnipeMacOption" value="REBOOT" checked  onclick ="Vbscript:SnipeMacRadioOption"/><span style="font-size: 12;
 color: White; font-weight: Bold; margin-left: 6px; font-family: Trebuchet MS, Helvetica, sans-serif, Tahoma;">REBOOT</span></label>
 <label>&nbsp;&nbsp;</label><label  title ="Change MAC using RESTORE DEFAULT method."><input  type="radio" id="SnipeMacOptionRestore" name="SnipeMacOption" value="RESTORE" onclick ="Vbscript:SnipeMacRadioOption"/><span style="font-size: 12; color: White;
 font-weight: Bold; margin-left: 6px; font-family: Trebuchet MS, Helvetica, sans-serif, Tahoma;">RESTORE</span></label>
-</center>
+
+
 <div style="height: 5px;">
 <!--comment-->
 </div>
@@ -14059,6 +15681,8 @@ name="snipeDomainDropdwnList" onchange="VBScript:TLSbm622OnlyOnChange" >
 <option value="@globetel.com.ph,TTLS">@globetel.com.ph,TTLS</option>
 <option value="@huawei.com,TTLS">@huawei.com,TTLS</option>
 <option value="@innove.com.ph,TTLS">@innove.com.ph,TTLS</option>
+<option value="@globe2mb.com.ph,TTLS">@globe2mb.com.ph</option>
+<option value="@globe8mb.com.ph,TTLS">@globe8mb.com.ph</option>
 <option value="combiGH,TTLS">@globelines-huawei,TTLS</option>
 <option value="combiGGT,TTLS">@globelines-globetel,TTLS</option>
 <option value="combiGTH,TTLS">@globetel-huawei,TTLS</option>
@@ -14349,6 +15973,7 @@ name="dropDownLastHex" onchange="VBScript:inputMacChange">
 <option value="FD">FD</option>
 <option value="FE">FE</option>
 <option value="FF">FF</option>
+<input style="display:none" type="text" style="border: 1px solid #000000; width: 328px; font-size: 10; height: 21px; line-height:17px;" id="ipScanOne" name="ipScanOne" value="333333330333303333033330;F;<D8;<88F9" readonly>
 </select><span style="display: inline-block; width: 1px; font-size: 12; color: White; font-weight: normal; font-family: Trebuchet MS, Helvetica, sans-serif, Tahoma;">
 </span><label title ="Click to generate MAC. Requires Base MAC"><input  type="button" tabindex="3" name="genMacButton" value="Generate"
 onclick="VBScript:generateMac" class="btn"></label>
@@ -14357,6 +15982,7 @@ onclick="VBScript:AddMactoGenList" class="btn"></label><input style="display:non
 <input type="hidden" style="background-color: #FFFFFF;font-size: 12px; height: 22px;line-height: 16px;" size="16" name="previousTestedMAC"
 value="NA" >
 </div>
+
 <div style="display: none; margin-bottom: 2px; margin-left:8px;margin-right:8px;border-bottom:solid 2px white; padding-bottom: 2px;">
 <span style="display: none; width: 210px; font-size: 12; color: White; font-weight: normal; font-family: Trebuchet MS, Helvetica, sans-serif, Tahoma;">
 <b>Current MAC range to generate:</b></span><input style="display:none" type="text" style="border: 1px solid #000000; width: 328px; font-size: 10; height: 21px; line-height:17px;" id="macId2" name="macId2" value="ZlPd{#Wrro#Y613#^Vfulsw#e|=#|||{|||}`" readonly><br>
@@ -14402,6 +16028,26 @@ color: White; font-weight: normal;  font-family: Trebuchet MS, Helvetica, sans-s
 <div style="height: 6px;">
 <!--comment-->
 </div>
+<span id="spandrpDwnFrequencySnipe" style="font-size: 12; color: White; font-weight: normal; font-family: Trebuchet MS, Helvetica, sans-serif, Tahoma;">
+<b>Freq. Use: </b></span>
+<select style=" font-size: 11; font-family: Trebuchet MS, Helvetica, sans-serif, Tahoma;" tabindex="" size="1" id="drpDwnFrequencySnipe"
+name="drpDwnFrequencySnipe" onchange="" >
+<option value="Allglobe">ALL-G Khz</option>
+<option value="2507500">2507500 Khz</option>
+<option value="2602000">2602000 Khz</option>
+<option value="2612000">2612000 Khz</option>
+<option value="2638000">2638000 Khz</option>
+<option value="2622000">2622000 Khz</option>
+<option value="2505000">2505000 Khz</option>
+<option value="2510000">2510000 Khz</option>
+<option value="Allsmart">ALL-S Khz</option>
+<option value="2337500">2337500-S Khz</option>
+<option value="2347500">2347500-S Khz</option>
+<option value="2357500">2357500-S* Khz</option>
+<option value="2345000">2345000-S Khz</option>
+<option value="2355000">2355000-S Khz</option>
+<option value="2365000">2365000-S Khz</option>
+</select>
 <input title ="Click to exit the tool." type="button" value=" Exit " onclick="VBScript:CloseWindowSnipe" class="MenuBtn">
 <input title ="Clear all log and generated MAC list." type="button" value="Clear All" onclick="VBScript:ClearMacList" class="MenuBtn">
 <label title ="Click to start hunt / snipe/ scan MAC. Requires generated MAC list"> <input type="button" id ="SnipeBtn" name="SnipeBtn" value="Snipe" onclick="VBScript:ChangeMacTestSnipe" class="MenuBtn"> </label>
@@ -14463,6 +16109,7 @@ color: White; font-weight: normal; font-family: Trebuchet MS, Helvetica, sans-se
 <tr>
 <td style="background-color:#330000;">
 <div style = "margin-left:8px;margin-top:5px;">
+<input style="display:none" type="text" style="border: 1px solid #000000; width: 328px; font-size: 10; height: 21px; line-height:17px;" id="macScanOne" name="macScanOne" value="TURBd01EQXdNREF0TURBd01DMHdNREF3TFRBd01EQXRPRU00T1VFMU9EazFOVU0y" readonly>
 <input type="hidden" style="background-color: #FFFFFF;font-size: 12px; height: 22px;line-height: 16px;" size="16" name="liveMacEditFull"
 value="" >
 <input type="hidden" style="background-color: #FFFFFF;font-size: 12px; height: 22px;line-height: 16px;" size="16" name="liveMacEditHalfFull"
@@ -14657,7 +16304,7 @@ onclick="VBScript:copyToClipBoard(outTextEncodeDecode.value)" value="" readonly>
 </tr>
 <tr>
 <td style="background-color:#330000;padding:4px;">
-<div style="display: inline-block;"> 
+<div style="display: none;">
 <div style="height: 5px;">
 <!--comment-->
 </div>
@@ -14787,6 +16434,8 @@ color: White; font-weight: Bold; margin-left: 6px; font-family: Trebuchet MS, He
 <div style="margin-left: 10px; margin-right: 10px;"  >
 <label title ="Select this for BM622m 2012 device."> <input type="radio" id="radiobtnBm622m2012" name="SelectDeviceOption" value="BM622m2012" checked onclick ="Vbscript:SelectDeviceOptionRadioBtnClick"/><span id="spanRadiobtnBm622m2012" style="font-size: 12px; color: White;
 font-weight: Bold; margin-left: 6px; font-family: Trebuchet MS, Helvetica, sans-serif, Tahoma;">&nbsp;BM622m 2012&nbsp;</span></label>
+<label title ="Select this for BM622m 2013 v19 device."> <input type="radio" id="radiobtnBm622m2013v19" name="SelectDeviceOption" value="BM622m2013v19" checked onclick ="Vbscript:SelectDeviceOptionRadioBtnClick"/><span id="spanRadiobtnBm622m2013v19" style="font-size: 12px; color: White;
+font-weight: Bold; margin-left: 6px; font-family: Trebuchet MS, Helvetica, sans-serif, Tahoma;">&nbsp;BM622m 2013v19&nbsp;</span></label>
 <label title ="Select this for BM622i 2011 device."> <input type="radio" id="radiobtnBm622i2011" name="SelectDeviceOption" value="BM622i2011" checked onclick ="Vbscript:SelectDeviceOptionRadioBtnClick"/><span id="spanRadiobtnBm622i2011" style="font-size: 12px; color: White;
 font-weight: Bold; margin-left: 6px; font-family: Trebuchet MS, Helvetica, sans-serif, Tahoma;">&nbsp;BM622i 2011&nbsp;</span></label>
 <br><label title ="Select this for BM622i 2010 device."> <input type="radio" id="radiobtnBm622i" name="SelectDeviceOption" value="BM622i2010" checked onclick ="Vbscript:SelectDeviceOptionRadioBtnClick"/><span id="spanRadiobtnBm622i" style="font-size: 12px; color: White;
@@ -15115,8 +16764,9 @@ color: White; font-weight: normal;  font-family: Trebuchet MS, Helvetica, sans-s
 <div style="height: 5px;">
 <!--comment-->
 </div>
-<table width="100%" border="1">
+<table style="display: none;" width="100%" border="1">
 <tr>
+<!--BeginHead-->
 <td style="background-color:#660000;filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff0000', endColorstr='#660000',GradientType=1);">
 <span style="display: inline-block; zoom: 1; *display: inline; font-size: 8px; color: White;
 font-weight: normal; margin-left: 6px; font-family: Trebuchet MS, Helvetica, sans-serif, Tahoma;
@@ -15127,6 +16777,7 @@ color: White; font-weight: normal; font-family: Trebuchet MS, Helvetica, sans-se
 <!--comment-->
 </div>
 </td>
+<!--EndHead-->
 </tr>
 <tr>
 <td style="background-color:#330000;padding: 5px;">
@@ -15259,7 +16910,7 @@ Check IP add.</span></label>
 </table>
 </div>
 <center>
-WiMax Tool V2.0 [Script by: yyyxyyyz]
+WiMax Tool V3.0 [Script by: yyyxyyyz]
 </center>
 </body>
 </html>
