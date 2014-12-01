@@ -662,26 +662,12 @@ fileSizeList.selectedIndex = i
 Exit for
 End if
 Next
-fileSizeList.Disabled = False
-If sAutoCheckUpdate = 1  Then
-chkAutoCheckUpdate.Checked = True
-document.all.chkAutoCheckUpdateLabel.style.background = "Green"
-Else
-chkAutoCheckUpdate.Checked = False
-End If
+
 End If
 
 End Sub
 ''
-Sub RunUpdateOnToolOk
-If chkAutoCheckUpdate.Checked Then
-MsgBox "TOOL is now CHECKING for latest update. Please WAIT...", 64+4096 , "Automatic CHECK TOOL Update is ENABLED...."
-DisplayLogChangeMAConly("Checking tool update is now running.. please WAIT....")
-RunUpdateOnToolOkFinal(1)
-Else
-DisplayLogChangeMAConly("Automatic CHECKING for latest update is DISABLED.")
-End If
-End Sub
+
 ''
 Sub RunUpdateOnToolOkFinal(typeInput)
 
@@ -918,7 +904,6 @@ radiobtnDv235tS.Checked = True
 radiobtnDv235tS.Click
 End If
 Sleeper 1000
-RunUpdateOnToolOk
 Else
 MsgBox "IMPORTANT:Before using the functions  of this tool." & vbCr & vbLf & "Please Fill-up the telnet account in the TELNET ACCOUNT TAB." & vbCr & vbLf & "DO NOT FORGET TO SAVE SETTINGS!!!" ,16+4096,"IMPORTANT NOTICE!!!"
 changeMACLog.value = "IMPORTANT:Before using the functions  of this tool." & vbCr & vbLf & "Please Fill-up the telnet account in the TELNET ACCOUNT TAB." & vbCr & vbLf & "DO NOT FORGET TO SAVE SETTINGS!!!"
@@ -15108,10 +15093,6 @@ CAUSED BY THE USE OF THIS SCRIPT.
 FOR PERSONAL BACKUP AND EDUCATIONAL PURPOSES. USE IT AT YOUR
 OWN RISK, I'M NOT RESPONSIBLE FOR ANY LEGAL OR ILLEGAL USE OF THIS SCRIPT.
 </p>
-<center>
-<label title = "Enable automatic check tool update."><input type="checkbox" id="chkAutoCheckUpdate" name ="chkAutoCheckUpdate" checked onclick="VBScript:GetChkAutoCheckUpdate" style="display:inline;" /><span id="chkAutoCheckUpdateLabel" name="chkAutoCheckUpdateLabel" style="font-size: 11;
-color: White; font-weight: normal;  font-family: Trebuchet MS, Helvetica, sans-serif, Tahoma; display:inline;">&nbsp;Enable AUTOMATIC check TOOL update.&nbsp;</span></label>
-</center>
 <div style="height: 5px;">
 <!--comment-->
 </div>
