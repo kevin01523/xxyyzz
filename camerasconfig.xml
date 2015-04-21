@@ -1,0 +1,985 @@
+<camerasConfig.xml>
+
+	<!-- params junk -->
+	<misc>
+		<nearPlane>0.1</nearPlane>
+		<farPlane>2000</farPlane>
+		
+		<!-- inertia -->
+		<inertiaRollCoef>0.08</inertiaRollCoef>
+
+		<!-- planes tracking -->
+		<planeTrackingRollCoef>0.075</planeTrackingRollCoef>
+
+		<!-- battle end post processing -->
+		<battleEndVignetteInnerRadius>0.3</battleEndVignetteInnerRadius>
+		<battleEndVignetteOuterRadius>0.5</battleEndVignetteOuterRadius>
+		<battleEndVignetteIntensity>0.5</battleEndVignetteIntensity>
+		<battleEndVignetteColor__tuple>0, 0, 0, 1</battleEndVignetteColor__tuple> <!-- rgba -->
+		<battleEndDesaturation>0.7</battleEndDesaturation>
+
+		<!-- battle end camera animation -->
+		<battleEndShipPitch>-0.0628</battleEndShipPitch>
+		<battleEndShipLookPointY>1</battleEndShipLookPointY>
+		<battleEndTotalAnnihilationFov>0.6</battleEndTotalAnnihilationFov>
+		<battleEndBaseCaptureFov>0.74</battleEndBaseCaptureFov>
+		<battleEndBaseLead>0.5</battleEndBaseLead>
+		<battleEndBaseHeight>5</battleEndBaseHeight>
+		<battleEndTimeDistanceCoef>0.35</battleEndTimeDistanceCoef>
+		<battleEndMaxTime>0.9</battleEndMaxTime>
+		<battleEndMinTime>0.6</battleEndMinTime>
+		<battleEndDirectionTimeCoef>1</battleEndDirectionTimeCoef>
+		<battleEndEasing__string>ExpoIn</battleEndEasing__string>
+
+		<!-- zooming -->
+		<zoomSpeed>100</zoomSpeed> <!-- zoom animation speed -->
+		<zoomBorder>1</zoomBorder>
+
+		<!-- state settings for first time switch to aviation/artillery in different modes -->
+		<!-- values' range is [0, 100] -->
+		<firstTimeSwitchToAviationInTps> 100 </firstTimeSwitchToAviationInTps>
+		<firstTimeSwitchToAviationInRts> 50 </firstTimeSwitchToAviationInRts>
+
+		<!-- dock params -->
+		<dockFlightTime> 10 </dockFlightTime>
+		<dockFlightEasing__string> QuadInOut </dockFlightEasing__string>
+		<dockInactivityTimeout> 50 </dockInactivityTimeout>
+		<dockExcursionTimeout> 10 </dockExcursionTimeout>
+		<dockDefaultYaw> 7.11600000551 </dockDefaultYaw>
+		<dockDefaultPitch> -0.142000006745 </dockDefaultPitch>
+		
+		<!-- model view params -->
+		<modelview_pitch> -0.78539816339 </modelview_pitch>
+		<modelview_yaw> -1.57079632679 </modelview_yaw>
+	
+		<!-- default pos in upgrade menu -->
+		<upgFlightEasing__string> QuadInOut </upgFlightEasing__string>
+		<upgFlightTime> 3 </upgFlightTime>
+		<upgDefaultYaw> 0.55 </upgDefaultYaw>
+		<upgDefaultPitch> 0.05 </upgDefaultPitch>
+		<upgDefaultFov> 1.1 </upgDefaultFov>
+		<upgDefaultZoom> 0 </upgDefaultZoom> <!-- zoom key -->
+		
+		<!-- hull view pos in upgrade menu -->
+		<hullFlightEasing__string> QuadInOut </hullFlightEasing__string>
+		<hullFlightTime> 3 </hullFlightTime>
+		<hullDefaultYaw> 1.47 </hullDefaultYaw>
+		<hullDefaultPitch> 0.05  </hullDefaultPitch>
+		<hullDefaultFov> 1.0 </hullDefaultFov>
+		<hullDefaultZoom> 0.5 </hullDefaultZoom> <!-- zoom key -->
+		
+		
+		<!-- modules type configs -->
+		<!--
+			'Artillery',
+		-->
+		<modelview_pitch_Artillery> -0.4 </modelview_pitch_Artillery>
+		<modelview_yaw_Artillery> 0 </modelview_yaw_Artillery>
+		<minDesiredLead_Artillery>0</minDesiredLead_Artillery>
+		<maxDesiredLead_Artillery>15</maxDesiredLead_Artillery>
+		<lead_ArtilleryDestroyer>0.10</lead_ArtilleryDestroyer>
+		<lead_ArtilleryBattleship>0.27</lead_ArtilleryBattleship>
+		<lead_ArtilleryCruiser>0.15</lead_ArtilleryCruiser>
+		<lead_ArtilleryAuxiliaryShip>0.30</lead_ArtilleryAuxiliaryShip>
+		<lead_ArtilleryAirCarrier>0.30</lead_ArtilleryAirCarrier>
+		<fov_Artillery>0.4</fov_Artillery>
+		<mouseSpeed_Artillery>1.5</mouseSpeed_Artillery>
+		<yawFreedom_Artillery>0.78539816339</yawFreedom_Artillery>
+		<pitchFreedom_Artillery>0.3</pitchFreedom_Artillery>
+		<minPitchFreedom_Artillery>0.5</minPitchFreedom_Artillery>	
+
+		<!--
+			'Atba',
+		-->		
+		<modelview_pitch_Atba> -0.78539816339 </modelview_pitch_Atba>
+		<modelview_yaw_Atba> 0 </modelview_yaw_Atba>
+		<minDesiredLead_Atba>0</minDesiredLead_Atba>
+		<maxDesiredLead_Atba>15</maxDesiredLead_Atba>
+		<lead_Atba>0.1</lead_Atba>
+		<fov_Atba>0.4</fov_Atba>
+		<yawFreedom_Atba>0.78539816339</yawFreedom_Atba>
+		<pitchFreedom_Atba>0.78539816339</pitchFreedom_Atba>
+		<minPitchFreedom_Atba>0.5</minPitchFreedom_Atba>	
+
+		<!--
+			'Engine',
+		-->
+		<modelview_pitch_Engine> -0.4 </modelview_pitch_Engine>
+		<modelview_yaw_Engine> 0 </modelview_yaw_Engine>
+		<minDesiredLead_Engine>0</minDesiredLead_Engine>
+		<maxDesiredLead_Engine>15</maxDesiredLead_Engine>
+		<lead_Engine>0.15</lead_Engine>
+		<fov_Engine>0.9</fov_Engine>
+		<yawFreedom_Engine>0.9</yawFreedom_Engine>
+		<pitchFreedom_Engine>0.25</pitchFreedom_Engine>
+		<minPitchFreedom_Engine>0.7</minPitchFreedom_Engine>	
+		
+		<!--
+			'Hull',
+		-->
+		<modelview_pitch_Hull> -0.4 </modelview_pitch_Hull>
+		<modelview_yaw_Hull> 0 </modelview_yaw_Hull>
+		<minDesiredLead_Hull>0</minDesiredLead_Hull>
+		<maxDesiredLead_Hull>15</maxDesiredLead_Hull>
+		<lead_Hull>0.4</lead_Hull>
+		<fov_Hull>0.7</fov_Hull>
+		<yawFreedom_Hull>1.0471975512</yawFreedom_Hull>
+		<pitchFreedom_Hull>0.706858347</pitchFreedom_Hull>
+		<minPitchFreedom_Hull>0.706858347</minPitchFreedom_Hull>	
+		
+		<!--
+			'Torpedoes',
+		-->
+		<modelview_pitch_Torpedoes> -0.25 </modelview_pitch_Torpedoes>
+		<modelview_yaw_Torpedoes> 0 </modelview_yaw_Torpedoes>
+		<minDesiredLead_Torpedoes>0</minDesiredLead_Torpedoes>
+		<maxDesiredLead_Torpedoes>15</maxDesiredLead_Torpedoes>
+		<lead_Torpedoes>0.1</lead_Torpedoes>
+		<fov_Torpedoes>0.5</fov_Torpedoes>
+		<yawFreedom_Torpedoes>0.5</yawFreedom_Torpedoes>
+		<pitchFreedom_Torpedoes>0.25</pitchFreedom_Torpedoes>
+		<minPitchFreedom_Torpedoes>0.4</minPitchFreedom_Torpedoes>	
+		
+		<!--
+			'Radars',
+		-->
+		<modelview_pitch_Radars> -0.78539816339 </modelview_pitch_Radars>
+		<modelview_yaw_Radars> 0 </modelview_yaw_Radars>
+		<minDesiredLead_Radars>0</minDesiredLead_Radars>
+		<maxDesiredLead_Radars>15</maxDesiredLead_Radars>
+		<lead_Radars>0.1</lead_Radars>
+		<fov_Radars>0.5</fov_Radars>
+		<yawFreedom_Radars>1.0471975512</yawFreedom_Radars>
+		<pitchFreedom_Radars>0.706858347</pitchFreedom_Radars>
+		<minPitchFreedom_Radars>0.706858347</minPitchFreedom_Radars>	
+	
+		<!--
+			'Finders',
+		-->
+		<modelview_pitch_Finders> -0.78539816339 </modelview_pitch_Finders>
+		<modelview_yaw_Finders> 0 </modelview_yaw_Finders>
+		<minDesiredLead_Finders>0</minDesiredLead_Finders>
+		<maxDesiredLead_Finders>15</maxDesiredLead_Finders>
+		<lead_Finders>0.1</lead_Finders>
+		<fov_Finders>0.5</fov_Finders>
+		<yawFreedom_Finders>1.0471975512</yawFreedom_Finders>
+		<pitchFreedom_Finders>0.706858347</pitchFreedom_Finders>
+		<minPitchFreedom_Finders>0.706858347</minPitchFreedom_Finders>	
+		
+		<!--
+			'Directors',
+		-->
+		<modelview_pitch_Directors> -0.78539816339 </modelview_pitch_Directors>
+		<modelview_yaw_Directors> 0 </modelview_yaw_Directors>
+		<minDesiredLead_Directors>0</minDesiredLead_Directors>
+		<maxDesiredLead_Directors>15</maxDesiredLead_Directors>
+		<lead_Directors>0.1</lead_Directors>
+		<fov_Directors>0.5</fov_Directors>
+		<yawFreedom_Directors>1.0471975512</yawFreedom_Directors>
+		<pitchFreedom_Directors>0.706858347</pitchFreedom_Directors>
+		<minPitchFreedom_Directors>0.706858347</minPitchFreedom_Directors>	
+		
+		<!--
+			'AirDefence'
+		-->
+		<modelview_pitch_AirDefence> -0.78539816339 </modelview_pitch_AirDefence>
+		<modelview_yaw_AirDefence> 0 </modelview_yaw_AirDefence>
+		<minDesiredLead_AirDefence>0</minDesiredLead_AirDefence>
+		<maxDesiredLead_AirDefence>15</maxDesiredLead_AirDefence>
+		<lead_AirDefence>0.1</lead_AirDefence>
+		<fov_AirDefence>0.4</fov_AirDefence>
+		<mouseSpeed_AirDefence>1.5</mouseSpeed_AirDefence>
+		<yawFreedom_AirDefence>0.78539816339</yawFreedom_AirDefence>
+		<pitchFreedom_AirDefence>0.78539816339</pitchFreedom_AirDefence>
+		<minPitchFreedom_AirDefence>0.5</minPitchFreedom_AirDefence>	
+		
+		<!--
+			'_Suo'
+		-->
+		<modelview_pitch_Suo> -0.78539816339 </modelview_pitch_Suo>
+		<modelview_yaw_Suo> 0 </modelview_yaw_Suo>
+		<minDesiredLead_Suo>0</minDesiredLead_Suo>
+		<maxDesiredLead_Suo>15</maxDesiredLead_Suo>
+		<lead_Suo>0.1</lead_Suo>
+		<fov_Suo>0.5</fov_Suo>
+		<yawFreedom_Suo>1.0471975512</yawFreedom_Suo>
+		<pitchFreedom_Suo>0.706858347</pitchFreedom_Suo>
+		<minPitchFreedom_Suo>0.706858347</minPitchFreedom_Suo>
+		
+				<!--
+			'_DeskWithPlanes',
+		-->
+		<modelview_pitch_DeskWithPlanes> -0.4 </modelview_pitch_DeskWithPlanes>
+		<modelview_yaw_DeskWithPlanes> 0 </modelview_yaw_DeskWithPlanes>
+		<minDesiredLead_DeskWithPlanes>0</minDesiredLead_DeskWithPlanes>
+		<maxDesiredLead_DeskWithPlanes>15</maxDesiredLead_DeskWithPlanes>
+		<lead_DeskWithPlanes>0.15</lead_DeskWithPlanes>
+		<fov_DeskWithPlanes>0.9</fov_DeskWithPlanes>
+		<mouseSpeed_DeskWithPlanes>3.5</mouseSpeed_DeskWithPlanes>
+		<yawFreedom_DeskWithPlanes>0.9</yawFreedom_DeskWithPlanes>
+		<pitchFreedom_DeskWithPlanes>0.25</pitchFreedom_DeskWithPlanes>
+		<minPitchFreedom_DeskWithPlanes>0.7</minPitchFreedom_DeskWithPlanes>
+		
+		<!--
+			'_Fighter',
+		-->
+		<modelview_pitch_Fighter> -0.4 </modelview_pitch_Fighter>
+		<modelview_yaw_Fighter> 0 </modelview_yaw_Fighter>
+		<minDesiredLead_Fighter>0</minDesiredLead_Fighter>
+		<maxDesiredLead_Fighter>15</maxDesiredLead_Fighter>
+		<lead_Fighter>0.15</lead_Fighter>
+		<fov_Fighter>0.9</fov_Fighter>
+		<mouseSpeed_Fighter>3.5</mouseSpeed_Fighter>
+		<yawFreedom_Fighter>0.9</yawFreedom_Fighter>
+		<pitchFreedom_Fighter>0.25</pitchFreedom_Fighter>
+		<minPitchFreedom_Fighter>0.7</minPitchFreedom_Fighter>
+		
+		<!--
+			'_Bomber',
+		-->
+		<modelview_pitch_Bomber> -0.4 </modelview_pitch_Bomber>
+		<modelview_yaw_Bomber> 0 </modelview_yaw_Bomber>
+		<minDesiredLead_Bomber>0</minDesiredLead_Bomber>
+		<maxDesiredLead_Bomber>15</maxDesiredLead_Bomber>
+		<lead_Bomber>0.15</lead_Bomber>
+		<fov_Bomber>0.9</fov_Bomber>
+		<mouseSpeed_Bomber>3.5</mouseSpeed_Bomber>
+		<yawFreedom_Bomber>0.9</yawFreedom_Bomber>
+		<pitchFreedom_Bomber>0.25</pitchFreedom_Bomber>
+		<minPitchFreedom_Bomber>0.7</minPitchFreedom_Bomber>
+		
+		<!--
+			'_Tbomber',
+		-->
+		<modelview_pitch_Tbomber> -0.4 </modelview_pitch_Tbomber>
+		<modelview_yaw_Tbomber> 0 </modelview_yaw_Tbomber>
+		<minDesiredLead_Tbomber>0</minDesiredLead_Tbomber>
+		<maxDesiredLead_Tbomber>15</maxDesiredLead_Tbomber>
+		<lead_Tbomber>0.15</lead_Tbomber>
+		<fov_Tbomber>0.9</fov_Tbomber>
+		<mouseSpeed_Tbomber>3.5</mouseSpeed_Tbomber>
+		<yawFreedom_Tbomber>0.9</yawFreedom_Tbomber>
+		<pitchFreedom_Tbomber>0.25</pitchFreedom_Tbomber>
+		<minPitchFreedom_Tbomber>0.7</minPitchFreedom_Tbomber>
+		
+	</misc>
+	
+	<animation>
+		<list>
+			<def>
+				<id> default </id>
+				<StandardAnimator>
+					<time> 0.75 </time>
+					<easing> CubicInOut </easing>
+				</StandardAnimator>
+			</def>
+
+
+			<def>
+				<id> SnakeTail_XS </id>
+				<proc> 
+					<id> dynamicLift </id>
+					<liftScale> 0.08 </liftScale> 
+					<minLift> 0 </minLift> 
+					<maxLift> 30 </maxLift> 
+					<controlPointOffset> 0.5 </controlPointOffset> 
+					<timeCoef> 15 </timeCoef> 
+					<minTime> 0.5 </minTime> 
+					<maxTime> 3.0 </maxTime>
+				</proc>
+				<StandardAnimator>
+					<time> 
+						<procResult> dynamicLift_time </procResult>
+					</time>
+					<easing> CubicInOut </easing>
+					<positionInterpolation>
+						<QuadBezierInterpolator> 
+							<controlPoint>
+								<procResult> dynamicLift_controlPoint </procResult>
+							</controlPoint>
+						</QuadBezierInterpolator>
+					</positionInterpolation>
+				</StandardAnimator>
+			</def>
+
+			<def>
+				<id> SnakeTail_SX </id>
+				<proc> 
+					<id> dynamicLift </id>
+					<liftScale> 0.08 </liftScale> 
+					<minLift> 0 </minLift> 
+					<maxLift> 30 </maxLift> 
+					<controlPointOffset> 0.5 </controlPointOffset> 
+					<timeCoef> 15 </timeCoef> 
+					<minTime> 0.5 </minTime> 
+					<maxTime> 3.0 </maxTime>
+				</proc>
+				<StandardAnimator>
+					<time> 
+						<procResult> dynamicLift_time </procResult>
+					</time>
+					<easing> CubicInOut </easing>
+					<positionInterpolation>
+						<QuadBezierInterpolator> 
+							<controlPoint>
+								<procResult> dynamicLift_controlPoint </procResult>
+							</controlPoint>
+						</QuadBezierInterpolator>
+					</positionInterpolation>
+				</StandardAnimator>
+			</def>
+
+			<def>
+				<id> SnakeTail_XX </id>
+				<StandardAnimator>
+					<time> 0.5 </time>
+					<easing> CubicInOut </easing>
+				</StandardAnimator>
+			</def>
+			
+			<def>
+				<id> SnakeTail_Xx </id>
+				<StandardAnimator>
+					<time> 0.75</time>
+					<easing> CubicOut </easing>
+				</StandardAnimator>
+			</def>
+
+			<def>
+				<id> SnakeTail_xX </id>
+				<StandardAnimator>
+					<time> 0.75 </time>
+					<easing> CubicOut </easing>
+				</StandardAnimator>
+			</def>
+
+			<def>
+				<id> SnakeTail_xx </id>
+				<StandardAnimator>
+					<time> 0.75 </time>
+					<easing> CubicInOut </easing>
+				</StandardAnimator>
+			</def>
+
+			<def>
+				<id> SnakeTail_zoomin </id>
+				<StandardAnimator>
+					<time> 0.4 </time>
+					<easing> CubicOut </easing>
+				</StandardAnimator>
+			</def>
+
+			<def>
+				<id> SnakeTail_zoomout </id>
+				<StandardAnimator>
+					<time> 0.75 </time>
+					<easing> CubicOut </easing>
+				</StandardAnimator>
+			</def>
+
+			<def>
+				<id> SnakeTail_zoomraise </id>
+				<enableScroll>1</enableScroll>
+				<StandardAnimator>
+					<time> 1.0 </time>
+					<easing> ExpoOut </easing>
+				</StandardAnimator>
+			</def>
+			
+			<def>
+				<id> gotoShipModule </id>
+				<DockModuleAnimator>
+					<time> 2.0 </time>
+					<easing> CubicInOut </easing>
+					<easingBoardChange> QuadInOut </easingBoardChange>
+				</DockModuleAnimator>
+			</def>
+
+			<def>
+				<id> returnFromTrackingShell </id>
+				<proc>
+					<id> timeAccordingToDistance </id>
+					<distCoef> 0.004 </distCoef>
+					<minTime> 0.5 </minTime>
+					<maxTime> 2.0 </maxTime>
+				</proc>
+				<proc>
+					<id> timeAccordingToYawPitchDiff </id>
+					<diffCoef> 0.75 </diffCoef>
+					<minTime> 0.5 </minTime>
+					<maxTime> 1 </maxTime>
+				</proc>
+				<!--
+				<proc>
+					<id> interimPoint </id>
+					<tyaw> 1 </tyaw>
+					<tpitch> 1 </tpitch>
+					<tx> 0 </tx>
+					<ty> 0 </ty>
+					<tz> 0 </tz>
+				</proc>
+				<WaypointsAnimator>
+					<waypoints>
+						<procResult> interimPoint_waypoints </procResult>
+					</waypoints>
+					<easing> CubicInOut </easing>
+					<animators>
+						<StandardAnimator>
+							<time> <procResult> timeAccordingToYawPitchDiff_time </procResult> </time>
+							<easing> Linear </easing>
+							<rotationInterpolation> 
+								<YawPitchInterpolator></YawPitchInterpolator>
+							</rotationInterpolation>
+						</StandardAnimator>
+						<StandardAnimator>
+							<time> <procResult> timeAccordingToDistance_time </procResult> </time>
+							<easing> Linear </easing>
+							<rotationInterpolation>
+								<YawPitchInterpolator></YawPitchInterpolator>
+							</rotationInterpolation>
+						</StandardAnimator>
+					</animators>
+				</WaypointsAnimator>-->
+				<CombineAnimator>
+					<first>
+						<StandardAnimator>
+							<time> <procResult> timeAccordingToYawPitchDiff_time </procResult> </time>
+							<easing> CubicInOut </easing>
+							<rotationInterpolation> 
+								<YawPitchInterpolator></YawPitchInterpolator>
+							</rotationInterpolation>
+						</StandardAnimator>
+					</first>
+					<second>
+						<StandardAnimator>
+							<time> <procResult> timeAccordingToDistance_time </procResult> </time>
+							<easing> CubicInOut </easing>
+							<rotationInterpolation>
+								<YawPitchInterpolator></YawPitchInterpolator>
+							</rotationInterpolation>
+						</StandardAnimator>	
+					</second>
+					<positionByFirst> false </positionByFirst>
+					<rotationByFirst> true </rotationByFirst>
+					<fovByFirst> true </fovByFirst>		
+					<delay> 0.5 </delay>	
+				</CombineAnimator>
+			</def>
+
+			<def>
+				<id> gotoTrackPlane </id>
+				<StandardAnimator>
+					<time> 2.0 </time>
+					<easing> CubicOut </easing>
+					<rotationInterpolation>
+						<YawPitchInterpolator></YawPitchInterpolator>
+					</rotationInterpolation>
+				</StandardAnimator>
+			</def>
+
+			<def>
+				<id> gotoTacticalMap </id>
+				<proc>
+					<id> interimPoint </id>
+					<tyaw> 0.3 </tyaw>
+					<tpitch> 1 </tpitch>
+					<tx> 1 </tx>
+					<ty> 1 </ty>
+					<tz> 0.5 </tz>
+				</proc>
+				<WaypointsAnimator>
+					<waypoints>
+						<procResult> interimPoint_waypoints </procResult>
+					</waypoints>
+					<easing> QuadInOut </easing>
+					<animators>
+						<StandardAnimator>
+							<time> 0.3 </time>
+							<easing> Linear </easing>
+							<rotationInterpolation> 
+								<YawPitchInterpolator></YawPitchInterpolator>
+							</rotationInterpolation>
+						</StandardAnimator>
+						<StandardAnimator>
+							<time> 0.9 </time>
+							<easing> QuadOut </easing>
+							<rotationInterpolation>
+								<YawPitchInterpolator></YawPitchInterpolator>
+							</rotationInterpolation>
+						</StandardAnimator>
+					</animators>
+				</WaypointsAnimator>
+			</def>
+
+			<def>
+				<id> switchBetweenShipsInDeathMode </id>
+				<proc> 
+					<id> dynamicLift </id>
+					<liftScale> 0.08 </liftScale> 
+					<minLift> 0 </minLift> 
+					<maxLift> 30 </maxLift> 
+					<controlPointOffset> 0.5 </controlPointOffset> 
+					<timeCoef> 15 </timeCoef> 
+					<minTime> 0.5 </minTime> 
+					<maxTime> 2.0 </maxTime>
+				</proc>
+				<StandardAnimator>
+					<time> 
+						<procResult> dynamicLift_time </procResult>
+					</time>
+					<easing> CubicInOut </easing>
+					<positionInterpolation>
+						<QuadBezierInterpolator> 
+							<controlPoint>
+								<procResult> dynamicLift_controlPoint </procResult>
+							</controlPoint>
+						</QuadBezierInterpolator>
+					</positionInterpolation>
+				</StandardAnimator>
+			</def>
+		</list>
+
+		<modeSwitches>
+			<switch>
+				<from> * </from>
+				<to> * </to>
+				<animation> default </animation>
+			</switch>
+
+			<switch>
+				<from> * </from>
+				<to> map </to>
+				<animation> gotoTacticalMap </animation>
+			</switch>
+
+			<switch>
+				<from> shell </from>
+				<to> * </to>
+				<animation> returnFromTrackingShell </animation>
+			</switch>
+
+			<switch>
+				<from> shell </from>
+				<to> shell </to>
+				<animation> default </animation>
+			</switch>
+
+			<switch>
+				<from> * </from>
+				<to> plane </to>
+				<animation> gotoTrackPlane </animation>
+			</switch>
+			
+			<switch>
+				<from> dock </from>
+				<to> dockModule </to>
+				<animation> gotoShipModule </animation>
+			</switch>
+
+
+
+			
+			
+		</modeSwitches>
+
+	</animation>
+
+	<modes>
+		
+		<airplane> <!-- came 2.2 -->
+			<controller>Airplane</controller>
+			<defaultKey>30</defaultKey>
+			<defaults>
+				<ignoreTerrain> 0 </ignoreTerrain>
+				<pitchOverflowDecayRate> 0.95 </pitchOverflowDecayRate>
+				<maxPitchCoef> 0.5 </maxPitchCoef>
+				<sensY>0.5</sensY>
+				<airplaneRTPC> 1 </airplaneRTPC>				
+			</defaults>
+			<barrierKey>30</barrierKey>
+			<barrierKey>70</barrierKey>
+			<states>
+				<state>
+					<key>0</key>
+					<pitch> -45 </pitch>
+					<sensitivity> 45 </sensitivity>
+					<cursorSensitivityCoef> 1.0 </cursorSensitivityCoef>
+					<keysSensitivityCoef> 1.0 </keysSensitivityCoef>
+					<lead> 60 </lead>
+					<forwardResistance>5</forwardResistance>
+				</state>
+				<state>
+					<key>30</key>
+					<pitch> -60 </pitch>
+					<sensitivity> 60 </sensitivity>
+					<cursorSensitivityCoef> 1.75 </cursorSensitivityCoef>
+					<keysSensitivityCoef> 1.75 </keysSensitivityCoef>
+					<lead> 102 </lead>
+				</state>
+				<state>
+					<key>70</key>
+					<pitch> -80 </pitch>
+					<sensitivity> 90 </sensitivity>
+					<cursorSensitivityCoef> 1.75 </cursorSensitivityCoef>
+					<keysSensitivityCoef> 1.75 </keysSensitivityCoef>
+					<lead> 158 </lead>
+				</state>
+				<state>
+					<key>100</key>
+					<pitch> -89 </pitch>
+					<sensitivity> 100 </sensitivity>						<!-- базовая чувствительность -->
+					<cursorSensitivityCoef> 3.5 </cursorSensitivityCoef>	<!-- скорость вращения при помощи курсора -->
+					<keysSensitivityCoef> 4.5 </keysSensitivityCoef>			<!-- скорость вращения при помощи клавиш -->
+					<lead> 200 </lead>
+					<backwardResistance>8</backwardResistance>
+				</state>
+			</states>
+		</airplane>
+		
+		<map> <!-- came 2.2 -->
+			<controller>TacticalMap</controller>
+			<defaultKey>0</defaultKey>
+			<states>
+				<state>
+					<fov> 2 </fov>
+					<sizeInPixels> 0 </sizeInPixels> <!-- set to zero if relatively sized map is desirable -->
+					<sizeInScreenPercents> 0.9 </sizeInScreenPercents>
+					<mapViewZ> 0.03 </mapViewZ>
+					<offsetZ> -0.03 </offsetZ>
+					<nearPlane>50</nearPlane>
+					<farPlane>5000</farPlane>
+				</state>
+			</states>
+		</map>
+
+
+		<shell> <!-- came 2.2 -->
+			<controller>Tracking</controller>
+			<defaultKey>0</defaultKey>
+			<defaults>
+				<minDesiredLead>5</minDesiredLead>
+				<maxDesiredLead>15</maxDesiredLead>
+				<fov>0.74</fov>
+				<yawFreedom>0.1</yawFreedom>
+				<pitchFreedom>0.4</pitchFreedom>
+				<minPitchFreedom>0.4</minPitchFreedom>
+			</defaults>
+			<states>
+				<state>
+					<key>0</key>
+					<lead>0</lead>
+				</state>
+				<state>
+					<key>100</key>
+					<lead>1</lead>
+				</state>
+			</states>
+		</shell>
+
+		<plane> <!-- came 2.2 -->
+			<controller>Tracking</controller>
+			<defaultKey>0</defaultKey>
+			<defaults>
+				<minDesiredLead>3</minDesiredLead>
+				<maxDesiredLead>45</maxDesiredLead>
+				<sensZ>1.2</sensZ>
+				<fov>0.74</fov>
+				<minPitchFreedom>1.4</minPitchFreedom>
+				<freeYaw>1</freeYaw>
+				<freePitch>0</freePitch>
+				<dontTrackDirection>0</dontTrackDirection>
+			</defaults>
+			<states>
+				<state>
+					<forwardResistance>0.5</forwardResistance>	
+					<key>0</key>
+					<lead>0</lead>
+				</state>
+				<state>
+					<key>50</key>
+					<lead>0.4</lead>
+				</state>
+				<state>
+					<key>100</key>
+					<lead>1.0</lead>
+					<backwardResistance>0.5</backwardResistance>
+				</state>
+			</states>
+		</plane>
+
+
+		<carrier> <!-- came 2.2 -->
+			<controller>Tracking</controller>
+			<defaultKey>0</defaultKey>
+			<defaults>
+				<minDesiredLead>3</minDesiredLead>
+				<maxDesiredLead>18</maxDesiredLead>
+				<sensZ>1.2</sensZ>
+				<fov>0.74</fov>
+				<minPitchFreedom>1.4</minPitchFreedom>
+				<freeYaw>1</freeYaw>
+				<freePitch>0</freePitch>
+				<dontTrackDirection>1</dontTrackDirection>
+				<useEllipticTrajectory>1</useEllipticTrajectory>
+				<alignToVehicle>1</alignToVehicle>
+				
+			</defaults>
+			<states>
+				<state>
+					<forwardResistance>0.5</forwardResistance>	
+					<key>0</key>
+					<lead>0</lead>
+				</state>
+				<state>
+					<key>50</key>
+					<lead>0.5</lead>
+				</state>
+				<state>
+					<key>100</key>
+					<lead>1.0</lead>
+					<backwardResistance>0.5</backwardResistance>
+				</state>
+			</states>
+		</carrier>
+
+		<dock>
+			<controller>DockEllipse</controller>
+			<defaultKey>0</defaultKey>
+			<defaults>
+				<minPitch>-55</minPitch>
+				<maxPitch>5</maxPitch>
+				<pitchInfluenceOnHeight>2</pitchInfluenceOnHeight>
+				<sensitivityXKeys>5</sensitivityXKeys>
+				<moveSmoothing>0.87</moveSmoothing>
+				<bowSternElongation>0.4</bowSternElongation>
+			</defaults>
+			<states>
+				<state>
+					<key>0</key>
+					<lead>1</lead>
+					<forwardResistance>0.5</forwardResistance>
+				</state>
+				<state>
+					<key>100</key>
+					<lead>5</lead>
+					<backwardResistance>0.5</backwardResistance>
+				</state>
+			</states>
+		</dock>
+		
+		<dockModule> <!-- came 2.2 -->
+			<controller>Tracking</controller>
+			<defaultKey>0</defaultKey>
+			<states>
+				<state>
+					<key>0</key>
+					<minDesiredLead>0</minDesiredLead>
+					<maxDesiredLead>15</maxDesiredLead>
+					<lead>0.1</lead>
+					<fov>0.5</fov>
+					<yawFreedom>1.0471975512</yawFreedom>
+					<pitchFreedom>0.706858347</pitchFreedom>
+					<minPitchFreedom>0.706858347</minPitchFreedom>
+					<forwardResistance>0.5</forwardResistance>
+					<backwardResistance>0.5</backwardResistance>
+				</state>
+			</states>
+		</dockModule>
+
+		<free> <!-- dev camera -->
+			<controller>Free</controller>
+			<defaultKey>0</defaultKey>
+			<defaults>
+					<maxVelocity>30.0</maxVelocity>
+					<acceleration>15.0</acceleration>
+					<velocityDamping>0.02</velocityDamping>
+					<minFov>0.2</minFov>
+					<maxFov>0.74</maxFov>
+					<fovSensitivity>1</fovSensitivity>
+			</defaults>
+			<states>
+				<state>
+					<key>0</key>
+					<fovSensitivity>0.001</fovSensitivity>
+				</state>
+				<state>
+					<key>1</key>
+				</state>
+				<state>
+					<key>2</key>
+					<velocityDamping>1.0</velocityDamping>
+				</state>
+			</states>
+		</free>
+
+		<snake_tail> 
+			<controller>SnakeTail</controller>			
+			<defaultKey>180</defaultKey>
+			<defaults>
+				<fovBase>50</fovBase>
+				<sensY>0.5</sensY>
+			</defaults>
+			<barrierKey>180</barrierKey>
+			<barrierKey>120</barrierKey>
+			<barrierKey>100</barrierKey>
+			<barrierKey>65</barrierKey>
+			<barrierKey>25</barrierKey>
+			<barrierKey>15</barrierKey>
+			<barrierKey>10</barrierKey>
+			<barrierKey>5</barrierKey>
+			<flyThrough> <minKey>0</minKey> <maxKey>5</maxKey> </flyThrough>
+			<flyThrough> <minKey>5</minKey> <maxKey>10</maxKey> </flyThrough>
+			<flyThrough> <minKey>10</minKey> <maxKey>15</maxKey> </flyThrough>
+			<flyThrough> <minKey>15</minKey> <maxKey>25</maxKey> </flyThrough>
+			<flyThrough> <minKey>25</minKey> <maxKey>65</maxKey> </flyThrough>
+			<flyThrough> <minKey>65</minKey> <maxKey>100</maxKey> </flyThrough>
+			<flyThrough> <minKey>100</minKey> <maxKey>120</maxKey> </flyThrough>
+			<flyThrough> <minKey>120</minKey> <maxKey>180</maxKey> </flyThrough>
+			<flyThrough> <minKey>180</minKey> <maxKey>220</maxKey> </flyThrough>
+			<states>
+				<state>
+					<key>0</key>
+					<fovBase>85</fovBase>
+					<sensY>6.0</sensY>
+					<zoom>11.0</zoom>
+					<smartZoomAngle> 85.0 </smartZoomAngle>
+					<smartZoomAngleMax> 85.0 </smartZoomAngleMax>
+					<nearPlane>4.0</nearPlane>
+					<minPitch>-65</minPitch>
+					<maxPitch>45</maxPitch>
+					<forwardResistance>4</forwardResistance>
+				</state>
+				<state>
+					<key>5</key>
+					<fovBase>55</fovBase>
+					<sensY>1</sensY>
+					<zoom>11.0</zoom>
+					<smartZoomAngle> 20.0 </smartZoomAngle>
+					<smartZoomAngleMax> 20.0 </smartZoomAngleMax>
+					<nearPlane>4.0</nearPlane>
+					<minPitch>-65</minPitch>
+					<maxPitch>45</maxPitch>
+					<forwardResistance>4</forwardResistance>
+				</state>
+				<state>
+					<key>10</key>
+					<fovBase>50</fovBase>
+					<sensY>0.9</sensY>
+					<zoom>10</zoom>
+					<smartZoomAngle> 15.0 </smartZoomAngle>
+					<smartZoomAngleMax> 15.0 </smartZoomAngleMax>
+					<nearPlane>4.0</nearPlane>
+					<minPitch>-65</minPitch>
+					<maxPitch>45</maxPitch>
+					<forwardResistance>4</forwardResistance>
+				</state>
+				<state>
+					<key>15</key>
+					<fovBase>50</fovBase>
+					<sensY>0.5</sensY>
+					<zoom>8</zoom>
+					<smartZoomAngle> 10.0 </smartZoomAngle>
+                    <smartZoomAngleMax> 10.0 </smartZoomAngleMax>
+					<nearPlane>4.0</nearPlane>
+					<minPitch>-40</minPitch>
+					<maxPitch>45</maxPitch>
+					<forwardResistance>4</forwardResistance>
+				</state>
+				<state>
+					<key>25</key>
+					<fovBase>50</fovBase>
+					<sensY>0.5</sensY>
+					<zoom>6</zoom>
+					<smartZoomAngle> 10.0 </smartZoomAngle>
+					<smartZoomAngleMax> 10.0 </smartZoomAngleMax>
+					<nearPlane>2.0</nearPlane>
+					<minPitch>-25</minPitch>
+					<maxPitch>20</maxPitch>
+					<forwardResistance>2</forwardResistance>
+				</state>
+				<state>
+					<key>65</key>
+					<fovBase>50</fovBase>
+					<sensY>0.5</sensY>
+					<zoom>3.5</zoom>
+					<nearPlane>0.1</nearPlane>
+					<minPitch>-10</minPitch>
+					<maxPitch>40</maxPitch>
+					<forwardResistance>2</forwardResistance>
+				</state>
+				<state>
+					<key>100</key>
+					<fovBase>50</fovBase>
+					<sensY>0.5</sensY>
+					<zoom>3</zoom>
+					<nearPlane>0.1</nearPlane>
+					<minPitch>-10</minPitch>
+					<maxPitch>40</maxPitch>
+					<forwardResistance>2</forwardResistance>
+				</state>
+				<state>
+					<key>120</key>
+					<fovBase>50</fovBase>
+					<sensY>0.5</sensY>
+					<zoom>2</zoom>
+					<minPitch>-20</minPitch>
+					<maxPitch>40</maxPitch>
+					<nearPlane>0.1</nearPlane>
+					<coeffRocking>1.0</coeffRocking>
+					<forwardResistance>1</forwardResistance>
+				</state>
+				<state>
+					<key>180</key>
+					<fovBase>50</fovBase>
+					<sensY>0.5</sensY>
+					<zoom>1.0</zoom>
+					<nearPlane>0.1</nearPlane>
+					<minPitch>-45</minPitch>
+					<maxPitch>40</maxPitch>
+					<coeffRocking>-3</coeffRocking>
+					<forwardResistance>3</forwardResistance>
+					<backwardResistance>3</backwardResistance>
+				</state>
+				<state>
+					<key>280</key>
+					<fovBase>55</fovBase>
+					<sensY>0.5</sensY>
+					<zoom>0.7</zoom>
+					<nearPlane>0.1</nearPlane>
+					<minPitch>-65</minPitch>
+					<maxPitch>65</maxPitch>
+					<coeffRocking>-2</coeffRocking>
+					<backwardResistance>4</backwardResistance>
+				</state>
+			</states>
+		</snake_tail> 
+		
+		<dev_camera> <!-- dev camera -->
+			<controller>DevCamera</controller>
+			<defaultKey>4</defaultKey>
+			<defaults>
+				<maxVelocity>30.0</maxVelocity>
+				<acceleration>15.0</acceleration>
+				<velocityDamping>0.02</velocityDamping>
+				<minFov>0.2</minFov>
+				<maxFov>0.74</maxFov>
+				<fovSensitivity>1</fovSensitivity>
+			</defaults>
+			
+			<states>
+				<state>
+					<key>3</key>
+					<fovSensitivity>0.001</fovSensitivity>
+				</state>
+				<state>
+					<key>4</key>
+				</state>
+				<state>
+					<key>5</key>
+					<velocityDamping>1.0</velocityDamping>
+				</state>
+			</states>
+		</dev_camera>		
+		
+	</modes>
+</camerasConfig.xml>
