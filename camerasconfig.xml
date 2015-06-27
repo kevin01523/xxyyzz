@@ -57,7 +57,7 @@
 		
 		
 		<!-- flags default position params -->
-		<flagDefaultYaw> 1.25 </flagDefaultYaw>
+		<flagDefaultYaw> 1.558 </flagDefaultYaw>
 		<flagDefaultPitch> -0.49 </flagDefaultPitch>
 	    <flagNode__string>HP_flag_4</flagNode__string>
 		<flagOffsetX>0</flagOffsetX>
@@ -409,7 +409,7 @@
 				<enableScroll>1</enableScroll>
 				<StandardAnimator>
 					<time> 1.0 </time>
-					<easing> Linear </easing>
+					<easing> ExpoOut </easing>
 				</StandardAnimator>
 			</def>
 			
@@ -622,7 +622,7 @@
 				<pitchOverflowDecayRate> 0.95 </pitchOverflowDecayRate>
 				<maxPitchCoef> 0.5 </maxPitchCoef>
 				<sensY>0.5</sensY>
-				<airplaneRTPC> 1 </airplaneRTPC>			
+				<airplaneRTPC> 1 </airplaneRTPC>				
 			</defaults>
 			<barrierKey>30</barrierKey>
 			<barrierKey>70</barrierKey>
@@ -685,10 +685,9 @@
 			<controller>Tracking</controller>
 			<defaultKey>0</defaultKey>
 			<defaults>
-				<minDesiredLead>10</minDesiredLead>
+				<minDesiredLead>5</minDesiredLead>
 				<maxDesiredLead>15</maxDesiredLead>
 				<fov>0.74</fov>
-				<nearPlane>0.45</nearPlane>
 				<yawFreedom>0.1</yawFreedom>
 				<pitchFreedom>0.4</pitchFreedom>
 				<minPitchFreedom>0.4</minPitchFreedom>
@@ -713,7 +712,6 @@
 				<maxDesiredLead>45</maxDesiredLead>
 				<sensZ>1.2</sensZ>
 				<fov>0.74</fov>
-				<nearPlane>1.0</nearPlane>
 				<minPitchFreedom>1.4</minPitchFreedom>
 				<freeYaw>1</freeYaw>
 				<freePitch>0</freePitch>
@@ -746,9 +744,7 @@
 				<maxDesiredLead>18</maxDesiredLead>
 				<sensZ>1.2</sensZ>
 				<fov>0.74</fov>
-				<nearPlane>1.0</nearPlane>
 				<minPitchFreedom>1.4</minPitchFreedom>
-				<pitchFreedom>0.0</pitchFreedom>
 				<freeYaw>1</freeYaw>
 				<freePitch>0</freePitch>
 				<dontTrackDirection>1</dontTrackDirection>
@@ -778,11 +774,13 @@
 			<controller>DockEllipse</controller>
 			<defaultKey>0</defaultKey>
 			<defaults>
+				<minPitch>-55</minPitch>
+				
 				<pitchInfluenceOnHeight>2</pitchInfluenceOnHeight>
 				<sensitivityXKeys>5</sensitivityXKeys>
 				<moveSmoothing>0.87</moveSmoothing>
 				<bowSternElongation>0.4</bowSternElongation>
-				<minPitch>-55</minPitch>
+				<minPitch>-60</minPitch>
 				<maxPitch>15</maxPitch>
 				<lead>1</lead>
 			</defaults>
@@ -791,13 +789,13 @@
 					<key>0</key>
 					<lead>1</lead>
 					<maxPitch>40</maxPitch>
-					<forwardResistance>0.3</forwardResistance>
+					<forwardResistance>0.5</forwardResistance>
 				</state>
 				<state>
 					<key>100</key>
-					<lead>3</lead>
+					<lead>5</lead>
 					<maxPitch>33</maxPitch>
-					<backwardResistance>0.25</backwardResistance>
+					<backwardResistance>0.5</backwardResistance>
 				</state>
 			</states>
 		</dockFlags>
@@ -818,12 +816,12 @@
 				<state>
 					<key>0</key>
 					<lead>1</lead>
-					<forwardResistance>0.3</forwardResistance>
+					<forwardResistance>0.5</forwardResistance>
 				</state>
 				<state>
 					<key>100</key>
 					<lead>5</lead>
-					<backwardResistance>0.3</backwardResistance>
+					<backwardResistance>0.5</backwardResistance>
 				</state>
 			</states>
 		</dock>
@@ -841,8 +839,8 @@
 					<yawFreedom>1.0471975512</yawFreedom>
 					<pitchFreedom>0.706858347</pitchFreedom>
 					<minPitchFreedom>0.706858347</minPitchFreedom>
-					<forwardResistance>0.3</forwardResistance>
-					<backwardResistance>0.3</backwardResistance>
+					<forwardResistance>0.5</forwardResistance>
+					<backwardResistance>0.5</backwardResistance>
 				</state>
 			</states>
 		</dockModule>
@@ -888,71 +886,152 @@
 			<defaultKey>180</defaultKey>
 			<defaults>
 				<fovBase>50</fovBase>
+				<sensY>0.5</sensY>
 			</defaults>
+			<barrierKey>180</barrierKey>
+			<barrierKey>160</barrierKey>
 			<barrierKey>120</barrierKey>
 			<barrierKey>100</barrierKey>
 			<barrierKey>65</barrierKey>
 			<barrierKey>25</barrierKey>
-			<barrierKey>12</barrierKey>
-			<barrierKey>0</barrierKey>
-			<flyThrough> <minKey>0</minKey> <maxKey>12</maxKey> </flyThrough>
-			<flyThrough> <minKey>12</minKey> <maxKey>25</maxKey> </flyThrough>
+			<barrierKey>15</barrierKey>
+			<barrierKey>10</barrierKey>
+			<barrierKey>5</barrierKey>
+			<flyThrough> <minKey>0</minKey> <maxKey>5</maxKey> </flyThrough>
+			<flyThrough> <minKey>5</minKey> <maxKey>10</maxKey> </flyThrough>
+			<flyThrough> <minKey>10</minKey> <maxKey>15</maxKey> </flyThrough>
+			<flyThrough> <minKey>15</minKey> <maxKey>25</maxKey> </flyThrough>
 			<flyThrough> <minKey>25</minKey> <maxKey>65</maxKey> </flyThrough>
 			<flyThrough> <minKey>65</minKey> <maxKey>100</maxKey> </flyThrough>
 			<flyThrough> <minKey>100</minKey> <maxKey>120</maxKey> </flyThrough>
+			<flyThrough> <minKey>120</minKey> <maxKey>160</maxKey> </flyThrough>
+			<flyThrough> <minKey>160</minKey> <maxKey>180</maxKey> </flyThrough>
+			<flyThrough> <minKey>180</minKey> <maxKey>220</maxKey> </flyThrough>
 			<states>
 				<state>
 					<key>0</key>
-					<zoom>12</zoom>
-					<smartZoomAngle> 1.0 </smartZoomAngle>
-					<smartZoomAngleMax> 8.0 </smartZoomAngleMax>
-					<nearPlane>2.0</nearPlane>
-					<minPitch>-2</minPitch>
-					<maxPitch>20</maxPitch>
+					<fovBase>85</fovBase>
+					<sensY>6.0</sensY>
+					<zoom>11.0</zoom>
+					<smartZoomAngle> 85.0 </smartZoomAngle>
+					<smartZoomAngleMax> 85.0 </smartZoomAngleMax>
+					<nearPlane>4.0</nearPlane>
+					<minPitch>-65</minPitch>
+					<maxPitch>45</maxPitch>
+					<forwardResistance>4</forwardResistance>
+				</state>
+				<state>
+					<key>5</key>
+					<fovBase>55</fovBase>
+					<sensY>1</sensY>
+					<zoom>11.0</zoom>
+					<smartZoomAngle> 20.0 </smartZoomAngle>
+					<smartZoomAngleMax> 20.0 </smartZoomAngleMax>
+					<nearPlane>4.0</nearPlane>
+					<minPitch>-65</minPitch>
+					<maxPitch>45</maxPitch>
+					<forwardResistance>4</forwardResistance>
+				</state>
+				<state>
+					<key>10</key>
+					<fovBase>50</fovBase>
+					<sensY>0.9</sensY>
+					<zoom>10</zoom>
+					<smartZoomAngle> 15.0 </smartZoomAngle>
+					<smartZoomAngleMax> 15.0 </smartZoomAngleMax>
+					<nearPlane>4.0</nearPlane>
+					<minPitch>-65</minPitch>
+					<maxPitch>45</maxPitch>
+					<forwardResistance>4</forwardResistance>
+				</state>
+				<state>
+					<key>15</key>
+					<fovBase>50</fovBase>
+					<sensY>0.5</sensY>
+					<zoom>8</zoom>
+					<smartZoomAngle> 10.0 </smartZoomAngle>
+                    <smartZoomAngleMax> 10.0 </smartZoomAngleMax>
+					<nearPlane>4.0</nearPlane>
+					<minPitch>-40</minPitch>
+					<maxPitch>45</maxPitch>
 					<forwardResistance>4</forwardResistance>
 				</state>
 				<state>
 					<key>25</key>
+					<fovBase>50</fovBase>
+					<sensY>0.5</sensY>
 					<zoom>6</zoom>
-					<smartZoomAngle> 0.7 </smartZoomAngle>
-					<smartZoomAngleMax> 2.0 </smartZoomAngleMax>
+					<smartZoomAngle> 10.0 </smartZoomAngle>
+					<smartZoomAngleMax> 10.0 </smartZoomAngleMax>
 					<nearPlane>2.0</nearPlane>
-					<minPitch>-2</minPitch>
+					<minPitch>-25</minPitch>
 					<maxPitch>20</maxPitch>
+					<forwardResistance>2</forwardResistance>
 				</state>
 				<state>
 					<key>65</key>
+					<fovBase>50</fovBase>
+					<sensY>0.5</sensY>
 					<zoom>3.5</zoom>
-					<nearPlane>1.5</nearPlane>
+					<nearPlane>0.1</nearPlane>
 					<minPitch>-10</minPitch>
-					<maxPitch>20</maxPitch>
+					<maxPitch>40</maxPitch>
+					<forwardResistance>2</forwardResistance>
 				</state>
 				<state>
 					<key>100</key>
-					<zoom>2</zoom>
-					<nearPlane>1.0</nearPlane>
+					<fovBase>50</fovBase>
+					<sensY>0.5</sensY>
+					<zoom>3</zoom>
+					<nearPlane>0.1</nearPlane>
 					<minPitch>-10</minPitch>
-					<maxPitch>20</maxPitch>
-					<forwardResistance>0.2</forwardResistance>
+					<maxPitch>40</maxPitch>
+					<forwardResistance>2</forwardResistance>
 				</state>
 				<state>
 					<key>120</key>
-					<zoom>1.0</zoom>
+					<fovBase>50</fovBase>
+					<sensY>0.5</sensY>
+					<zoom>2</zoom>
 					<minPitch>-20</minPitch>
-					<maxPitch>30</maxPitch>
+					<maxPitch>40</maxPitch>
 					<nearPlane>0.1</nearPlane>
 					<coeffRocking>1.0</coeffRocking>
-					<forwardResistance>0.1</forwardResistance>
-					<backwardResistance>0.1</backwardResistance>
+					<forwardResistance>1</forwardResistance>
 				</state>
 				<state>
+					<key>160</key>
+					<fovBase>50</fovBase>
+					<sensY>0.5</sensY>
+					<zoom>2</zoom>
+					<minPitch>-20</minPitch>
+					<maxPitch>40</maxPitch>
+					<nearPlane>0.1</nearPlane>
+					<coeffRocking>1.0</coeffRocking>
+					<forwardResistance>1</forwardResistance>
+				</state>				
+				<state>
 					<key>180</key>
+					<fovBase>50</fovBase>
+					<sensY>0.5</sensY>
 					<zoom>1.0</zoom>
-					<nearPlane>1.5</nearPlane>
+					<nearPlane>0.1</nearPlane>
 					<minPitch>-45</minPitch>
-					<maxPitch>35</maxPitch>
+					<maxPitch>40</maxPitch>
 					<coeffRocking>-3</coeffRocking>
-					<backwardResistance>0.5</backwardResistance>
+					<forwardResistance>3</forwardResistance>
+					<backwardResistance>3</backwardResistance>
+				</state>
+				<state>
+					<key>280</key>
+					<fovBase>55</fovBase>
+					<sensY>0.5</sensY>
+					<zoom>0.7</zoom>
+					<nearPlane>0.1</nearPlane>
+					<minPitch>-65</minPitch>
+					<maxPitch>65</maxPitch>
+					<coeffRocking>-2</coeffRocking>
+					<backwardResistance>4</backwardResistance>
 				</state>
 			</states>
 		</snake_tail> 
