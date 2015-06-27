@@ -57,7 +57,7 @@
 		
 		
 		<!-- flags default position params -->
-		<flagDefaultYaw> 1.558 </flagDefaultYaw>
+		<flagDefaultYaw> 1.25 </flagDefaultYaw>
 		<flagDefaultPitch> -0.49 </flagDefaultPitch>
 	    <flagNode__string>HP_flag_4</flagNode__string>
 		<flagOffsetX>0</flagOffsetX>
@@ -409,7 +409,7 @@
 				<enableScroll>1</enableScroll>
 				<StandardAnimator>
 					<time> 1.0 </time>
-					<easing> ExpoOut </easing>
+					<easing> Linear </easing>
 				</StandardAnimator>
 			</def>
 			
@@ -622,7 +622,7 @@
 				<pitchOverflowDecayRate> 0.95 </pitchOverflowDecayRate>
 				<maxPitchCoef> 0.5 </maxPitchCoef>
 				<sensY>0.5</sensY>
-				<airplaneRTPC> 1 </airplaneRTPC>				
+				<airplaneRTPC> 1 </airplaneRTPC>			
 			</defaults>
 			<barrierKey>30</barrierKey>
 			<barrierKey>70</barrierKey>
@@ -685,9 +685,10 @@
 			<controller>Tracking</controller>
 			<defaultKey>0</defaultKey>
 			<defaults>
-				<minDesiredLead>5</minDesiredLead>
+				<minDesiredLead>10</minDesiredLead>
 				<maxDesiredLead>15</maxDesiredLead>
 				<fov>0.74</fov>
+				<nearPlane>0.45</nearPlane>
 				<yawFreedom>0.1</yawFreedom>
 				<pitchFreedom>0.4</pitchFreedom>
 				<minPitchFreedom>0.4</minPitchFreedom>
@@ -712,6 +713,7 @@
 				<maxDesiredLead>45</maxDesiredLead>
 				<sensZ>1.2</sensZ>
 				<fov>0.74</fov>
+				<nearPlane>1.0</nearPlane>
 				<minPitchFreedom>1.4</minPitchFreedom>
 				<freeYaw>1</freeYaw>
 				<freePitch>0</freePitch>
@@ -744,7 +746,9 @@
 				<maxDesiredLead>18</maxDesiredLead>
 				<sensZ>1.2</sensZ>
 				<fov>0.74</fov>
+				<nearPlane>1.0</nearPlane>
 				<minPitchFreedom>1.4</minPitchFreedom>
+				<pitchFreedom>0.0</pitchFreedom>
 				<freeYaw>1</freeYaw>
 				<freePitch>0</freePitch>
 				<dontTrackDirection>1</dontTrackDirection>
@@ -774,13 +778,11 @@
 			<controller>DockEllipse</controller>
 			<defaultKey>0</defaultKey>
 			<defaults>
-				<minPitch>-55</minPitch>
-				
 				<pitchInfluenceOnHeight>2</pitchInfluenceOnHeight>
 				<sensitivityXKeys>5</sensitivityXKeys>
 				<moveSmoothing>0.87</moveSmoothing>
 				<bowSternElongation>0.4</bowSternElongation>
-				<minPitch>-60</minPitch>
+				<minPitch>-55</minPitch>
 				<maxPitch>15</maxPitch>
 				<lead>1</lead>
 			</defaults>
@@ -789,13 +791,13 @@
 					<key>0</key>
 					<lead>1</lead>
 					<maxPitch>40</maxPitch>
-					<forwardResistance>0.5</forwardResistance>
+					<forwardResistance>0.3</forwardResistance>
 				</state>
 				<state>
 					<key>100</key>
-					<lead>5</lead>
+					<lead>3</lead>
 					<maxPitch>33</maxPitch>
-					<backwardResistance>0.5</backwardResistance>
+					<backwardResistance>0.25</backwardResistance>
 				</state>
 			</states>
 		</dockFlags>
@@ -816,12 +818,12 @@
 				<state>
 					<key>0</key>
 					<lead>1</lead>
-					<forwardResistance>0.5</forwardResistance>
+					<forwardResistance>0.3</forwardResistance>
 				</state>
 				<state>
 					<key>100</key>
 					<lead>5</lead>
-					<backwardResistance>0.5</backwardResistance>
+					<backwardResistance>0.3</backwardResistance>
 				</state>
 			</states>
 		</dock>
@@ -839,8 +841,8 @@
 					<yawFreedom>1.0471975512</yawFreedom>
 					<pitchFreedom>0.706858347</pitchFreedom>
 					<minPitchFreedom>0.706858347</minPitchFreedom>
-					<forwardResistance>0.5</forwardResistance>
-					<backwardResistance>0.5</backwardResistance>
+					<forwardResistance>0.3</forwardResistance>
+					<backwardResistance>0.3</backwardResistance>
 				</state>
 			</states>
 		</dockModule>
@@ -892,17 +894,19 @@
 			<barrierKey>65</barrierKey>
 			<barrierKey>25</barrierKey>
 			<barrierKey>12</barrierKey>
-			<flyThrough> <minKey>0</minKey> <maxKey>25</maxKey> </flyThrough>
+			<barrierKey>0</barrierKey>
+			<flyThrough> <minKey>0</minKey> <maxKey>12</maxKey> </flyThrough>
+			<flyThrough> <minKey>12</minKey> <maxKey>25</maxKey> </flyThrough>
 			<flyThrough> <minKey>25</minKey> <maxKey>65</maxKey> </flyThrough>
 			<flyThrough> <minKey>65</minKey> <maxKey>100</maxKey> </flyThrough>
 			<flyThrough> <minKey>100</minKey> <maxKey>120</maxKey> </flyThrough>
 			<states>
 				<state>
 					<key>0</key>
-					<zoom>10</zoom>
-					<smartZoomAngle> 2.0 </smartZoomAngle>
-					<smartZoomAngleMax> 10.0 </smartZoomAngleMax>
-					<nearPlane>1.0</nearPlane>
+					<zoom>12</zoom>
+					<smartZoomAngle> 1.0 </smartZoomAngle>
+					<smartZoomAngleMax> 8.0 </smartZoomAngleMax>
+					<nearPlane>2.0</nearPlane>
 					<minPitch>-2</minPitch>
 					<maxPitch>20</maxPitch>
 					<forwardResistance>4</forwardResistance>
@@ -910,23 +914,23 @@
 				<state>
 					<key>25</key>
 					<zoom>6</zoom>
-					<smartZoomAngle> 2.0 </smartZoomAngle>
-					<smartZoomAngleMax> 10.0 </smartZoomAngleMax>
-					<nearPlane>1.0</nearPlane>
+					<smartZoomAngle> 0.7 </smartZoomAngle>
+					<smartZoomAngleMax> 2.0 </smartZoomAngleMax>
+					<nearPlane>2.0</nearPlane>
 					<minPitch>-2</minPitch>
 					<maxPitch>20</maxPitch>
 				</state>
 				<state>
 					<key>65</key>
 					<zoom>3.5</zoom>
-					<nearPlane>0.1</nearPlane>
+					<nearPlane>1.5</nearPlane>
 					<minPitch>-10</minPitch>
 					<maxPitch>20</maxPitch>
 				</state>
 				<state>
 					<key>100</key>
 					<zoom>2</zoom>
-					<nearPlane>0.1</nearPlane>
+					<nearPlane>1.0</nearPlane>
 					<minPitch>-10</minPitch>
 					<maxPitch>20</maxPitch>
 					<forwardResistance>0.2</forwardResistance>
@@ -944,7 +948,7 @@
 				<state>
 					<key>180</key>
 					<zoom>1.0</zoom>
-					<nearPlane>0.1</nearPlane>
+					<nearPlane>1.5</nearPlane>
 					<minPitch>-45</minPitch>
 					<maxPitch>35</maxPitch>
 					<coeffRocking>-3</coeffRocking>
